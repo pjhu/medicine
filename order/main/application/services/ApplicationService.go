@@ -2,7 +2,7 @@ package orderapplicationservice
 
 import (
 	cqrs "medicine/common/main/datasource"
-	log "medicine/common/main/log"
+	log "github.com/sirupsen/logrus"
 	ordercommand "medicine/order/main/application/command"
 	orderresponse "medicine/order/main/application/response"
 	ordermodel "medicine/order/main/domain/models"
@@ -12,7 +12,7 @@ import (
 func PlaceOrderHandler(placeOrderCommand ordercommand.PlaceOrderCommand) (response orderresponse.PlaceOrderResponse){
 
 	log.Info("applilcation service info:%#v\n", placeOrderCommand)
-	neworder := ordermodel.PlaceOrder(2, placeOrderCommand.Quantity, "", "", "")
+	neworder := ordermodel.PlaceOrder(6, placeOrderCommand.Quantity, "", "", "")
 	
 	session := cqrs.Engine.NewSession()
 	defer session.Close()
@@ -30,6 +30,7 @@ func PlaceOrderHandler(placeOrderCommand ordercommand.PlaceOrderCommand) (respon
     session.Rollback()
     return
 	}
-	placeOrderResponse := orderresponse.PlaceOrderResponse{ID:1}
+
+	placeOrderResponse := orderresponse.NewPlaceOrderResponse(6)
 	return placeOrderResponse
 }

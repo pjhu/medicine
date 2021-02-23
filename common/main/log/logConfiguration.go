@@ -7,7 +7,7 @@ import (
 )
 
 // Setup for log configratioin
-func Setup() {
+func init() {
   // Log as JSON instead of the default ASCII formatter.
   log.SetFormatter(joonix.NewFormatter())
 
@@ -17,24 +17,4 @@ func Setup() {
 
   // Only log the warning severity or above.
   log.SetLevel(log.DebugLevel)
-}
-
-// Info log
-func Info(args ...interface{}) {
-	log.Info(args)
-}
-
-// Warn log
-func Warn(args ...interface{}) {
-	log.Warn(args)
-}
-
-// Debug log
-func Debug(args ...interface{}) {
-	log.Debug(args)
-}
-
-// Error log
-func Error(args ...interface{}) {
-	log.Error(args)
 }

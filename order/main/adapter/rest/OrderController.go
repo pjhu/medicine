@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	log "medicine/common/main/log"
+	log "github.com/sirupsen/logrus"
 	ordercommand "medicine/order/main/application/command"
 	orderapplicationservice "medicine/order/main/application/services"
 )
