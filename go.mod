@@ -7,6 +7,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/joonix/log v0.0.0-20200409080653-9c1d2ceb5f1d
 	github.com/lib/pq v1.8.0
+	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.0
 	github.com/spf13/viper v1.7.1
 	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect

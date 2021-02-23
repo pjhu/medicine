@@ -6,6 +6,7 @@
 - golang-migrate
 - xorm
 - postgresql
+- pkg/error
 
 ## 2. 初次运行
 
@@ -46,11 +47,15 @@ migrate -source file://application/src/main/resources/db/migrations -database po
 ```
 
 ## 需要解决
-1. exception
-2. restfulapi
-3. authentication & authorization
-4. test
-5. 在k8s中运行
-6. 外部请求
-7. 分布式事务
-8. model变为私有的，没发捕捉名字映射错误
+- exception[x]
+- restfulapi
+- snowfaks
+- authentication & authorization
+- validator
+- test
+- 在k8s中运行
+- 外部请求
+- 分布式事务
+- goroutine
+- 垃圾回收
+- model变为私有的，没发捕捉名字映射错误
