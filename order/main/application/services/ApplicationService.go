@@ -12,7 +12,7 @@ import (
 func PlaceOrderHandler(placeOrderCommand ordercommand.PlaceOrderCommand) (response orderresponse.PlaceOrderResponse){
 
 	log.Info("applilcation service info:%#v\n", placeOrderCommand)
-	neworder := ordermodel.PlaceOrder(6, placeOrderCommand.Quantity, "", "", "")
+	neworder := ordermodel.PlaceOrder(8, placeOrderCommand.Quantity, "", "", "")
 	
 	session := cqrs.Engine.NewSession()
 	defer session.Close()
@@ -31,6 +31,6 @@ func PlaceOrderHandler(placeOrderCommand ordercommand.PlaceOrderCommand) (respon
     return
 	}
 
-	placeOrderResponse := orderresponse.NewPlaceOrderResponse(6)
+	placeOrderResponse := orderresponse.NewPlaceOrderResponse(neworder.Id)
 	return placeOrderResponse
 }

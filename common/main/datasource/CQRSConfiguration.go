@@ -6,6 +6,8 @@ import (
 	xormlog "xorm.io/xorm/log"
 	"xorm.io/xorm/names"
 
+	"github.com/spf13/viper"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -15,8 +17,8 @@ var Engine *xorm.EngineGroup
 // DBConnect for db connection
 func init() {
 	conns := []string{
-		"postgres://postgres:123@localhost:15432/test?sslmode=disable;", // first one is master
-		"postgres://postgres:123@localhost:25432/test?sslmode=disable;", // slave
+		viper.GetString("datasource.master.jdbcUrl"), // first one is master
+		viper.GetString("datasource.slave.jdbcUrl"), // slave
 	}
 
 	var err error

@@ -1,2 +1,15 @@
 logging:
   level: DEBUG
+
+
+datasource:
+  master:
+    jdbcUrl: postgres://postgres:123@localhost:15432/test?sslmode=disable;
+    username: postgres
+    password: 123
+  slave:
+    jdbcUrl: postgres://postgres:123@localhost:25432/test?sslmode=disable;
+    username: postgres
+    password: 123
+  config:
+    socketTimeout: 60
