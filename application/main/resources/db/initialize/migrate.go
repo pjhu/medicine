@@ -19,8 +19,7 @@ func init() {
 		panic("fail to creat new migrate")
 	}
 	if err := m.Up(); err != nil {
-		log.Error(errors.Wrap(err, "Fail to migreate"))
-		panic("Fail to execute migreate")
+		log.Error(err)
 	}
 	log.Info("--- Completed DB Migrate  ---")
 }

@@ -48,8 +48,8 @@ migrate -source file://application/src/main/resources/db/migrations -database po
 
 ## 需要解决
 - exception[x]
-- restfulapi
-- snowfaks
+- restfulapi[x]
+- snowfaks[x]
 - authentication & authorization
 - validator
 - test

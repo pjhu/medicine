@@ -3,6 +3,7 @@ module medicine
 go 1.16
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/joonix/log v0.0.0-20200409080653-9c1d2ceb5f1d

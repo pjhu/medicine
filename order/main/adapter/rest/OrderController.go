@@ -10,16 +10,36 @@ import (
 	orderapplicationservice "medicine/order/main/application/services"
 )
 
+type getAccountRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
 // Routers for order
 func Routers(e *gin.Engine) {
-	e.POST("/api/v1/admin/orders", func(c *gin.Context) {
+	e.POST("/api/v1/admin/orders", func(ctx *gin.Context) {
 		var placeOrderCommand ordercommand.PlaceOrderCommand
-		if err := c.ShouldBind(&placeOrderCommand); err == nil {
-			log.Info("controller info:%#v\n", placeOrderCommand)
-			placeOrderResponse := orderapplicationservice.PlaceOrderHandler(placeOrderCommand)
-			c.JSON(http.StatusOK, placeOrderResponse)
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if err := ctx.ShouldBind(&placeOrderCommand); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
+
+		log.Info("controller info:%#v\n", placeOrderCommand)
+		placeOrderResponse, err := orderapplicationservice.PlaceOrderHandler(placeOrderCommand)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})	
+		}
+		ctx.JSON(http.StatusCreated, placeOrderResponse)
+	})
+
+	e.GET("/api/v1/admin/orders/:id", func(ctx *gin.Context) {
+		var req getAccountRequest
+		if err := ctx.ShouldBindUri(&req); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+
+		order, err := orderapplicationservice.GetOrderDetail(req.ID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		ctx.JSON(http.StatusCreated, order)
 	})
 }
