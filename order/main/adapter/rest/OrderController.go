@@ -15,8 +15,8 @@ type getAccountRequest struct {
 }
 
 // Routers for order
-func Routers(e *gin.Engine) {
-	e.POST("/api/v1/admin/orders", func(ctx *gin.Context) {
+func Routers(e *gin.RouterGroup) {
+	e.POST("orders", func(ctx *gin.Context) {
 		var placeOrderCommand ordercommand.PlaceOrderCommand
 		if err := ctx.ShouldBind(&placeOrderCommand); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -25,12 +25,13 @@ func Routers(e *gin.Engine) {
 		log.Info("controller info:%#v\n", placeOrderCommand)
 		placeOrderResponse, err := orderapplicationservice.PlaceOrderHandler(placeOrderCommand)
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})	
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 		ctx.JSON(http.StatusCreated, placeOrderResponse)
 	})
 
-	e.GET("/api/v1/admin/orders/:id", func(ctx *gin.Context) {
+	e.GET("orders/:id", func(ctx *gin.Context) {
 		var req getAccountRequest
 		if err := ctx.ShouldBindUri(&req); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -38,7 +39,8 @@ func Routers(e *gin.Engine) {
 
 		order, err := orderapplicationservice.GetOrderDetail(req.ID)
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
 		}
 		ctx.JSON(http.StatusCreated, order)
 	})

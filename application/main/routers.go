@@ -2,22 +2,36 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+
+	order "medicine/order/main/adapter/rest"
 )
 
-type Option func(*gin.Engine)
+type option func(*gin.RouterGroup)
 
-var options = []Option{}
-
-// Include 注册app的路由配置
-func Include(opts ...Option) {
+// include 注册app的路由配置
+func include(opts ...option) []option {
+	var options = []option{}
 	options = append(options, opts...)
+	return options
 }
 
-// Init 初始化
-func Init() *gin.Engine {
-	r := gin.Default()
-	for _, opt := range options {
-		opt(r)
+// SetupRouterEngine 初始化
+func SetupRouterEngine() *gin.Engine {
+
+	engine := gin.Default()
+
+	// Global middleware
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
+	engine.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	engine.Use(gin.Recovery())
+
+	orderGroup := engine.Group("/api/v1/user")
+
+	for _, opt := range include(order.Routers) {
+		opt(orderGroup)
 	}
-	return r
+	return engine
 }

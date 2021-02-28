@@ -49,12 +49,14 @@ migrate -source file://application/src/main/resources/db/migrations -database po
 ## 需要解决
 - exception[x]
 - restfulapi[x]
-- snowfaks[x]
+- snowflaks[x]
+- validator[x]
 - authentication & authorization
-- validator
 - test
 - 在k8s中运行
 - 外部请求
+- 统一错误处理
+- 外部服务调用接口化
 - 分布式事务
 - goroutine
 - 垃圾回收

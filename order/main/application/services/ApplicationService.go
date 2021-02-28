@@ -1,12 +1,14 @@
 package orderapplicationservice
 
 import (
+	"errors"
 	cqrs "medicine/common/main/datasource"
-	log "github.com/sirupsen/logrus"
+	IdGenerator "medicine/common/main/idgenerator"
 	ordercommand "medicine/order/main/application/command"
 	orderresponse "medicine/order/main/application/response"
 	ordermodel "medicine/order/main/domain/models"
-	IdGenerator "medicine/common/main/idgenerator"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // PlaceOrderHandler for create order
@@ -38,24 +40,16 @@ func PlaceOrderHandler(placeOrderCommand ordercommand.PlaceOrderCommand) (result
 }
 
 // GetOrderDetail for get order detail
-func GetOrderDetail(id int64) (result ordermodel.UserOrder, e error) {
-	session := cqrs.Engine.NewSession()
-	defer session.Close()
+func GetOrderDetail(id int64) (rest ordermodel.UserOrder, e error) {
 
 	var order ordermodel.UserOrder 
-	// add Begin() before any action
-	err := session.Begin()
-	if err != nil {
-    log.Error(err)
-		return order, err
-	}
-
 	order = ordermodel.UserOrder{Id:id}
-	_, err = cqrs.Engine.Get(&order)
-	if err != nil {
+	has, err := cqrs.Engine.Get(&order)
+	if (! has) {
+		var notFoundError = errors.New("not found")
 		log.Error(err)
-    session.Rollback()
-    return order, err
+		log.Error(notFoundError)
+    return order, notFoundError
 	}
 	return order, nil
 }
