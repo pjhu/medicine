@@ -36,14 +36,14 @@ https://github.com/golang-migrate/migrate
 create table 
 
 cd #{project path}
-migrate create -ext sql -dir application/src/main/resources/db/migrations  create_order_table
+migrate create -ext sql -dir application/main/resources/db/migrations  create_order_table
 ```
 
 ```
 migrate
 
 cd #{project path}
-migrate -source file://application/src/main/resources/db/migrations -database postgres://localhost:15432/test?sslmode=disable up
+migrate -source file://application/main/resources/db/migrations -database postgres://localhost:15432/test?sslmode=disable up
 ```
 
 ## 需要解决

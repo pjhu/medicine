@@ -15,11 +15,12 @@ func init() {
 	log.Info("--- Starting DB Migrate ---")
 	m, err := migrate.New("file://resources/db/migrations/", viper.GetString("datasource.master.jdbcUrl"))
 	if err != nil {
-		log.Error(errors.Wrap(err, "Fail to create new migrate"))
-		panic("fail to creat new migrate")
+		log.Error(errors.Wrap(err, "fail to start new migrate engine"))
+		panic("fail to start new migrate engine")
 	}
-	if err := m.Up(); err != nil {
+	if err := m.Up(); err != nil && err.Error() != "no change" {
 		log.Error(err)
+		panic("fail to update migration")
 	}
 	log.Info("--- Completed DB Migrate  ---")
 }

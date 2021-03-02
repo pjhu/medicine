@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
+	identity "medicine/identity/main/adapter/rest"
 	order "medicine/order/main/adapter/rest"
+	middleware "medicine/common/main/middleware"
 )
 
 type option func(*gin.RouterGroup)
@@ -28,10 +30,14 @@ func SetupRouterEngine() *gin.Engine {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	engine.Use(gin.Recovery())
 
-	orderGroup := engine.Group("/api/v1/user")
+	engine.POST("/api/v1/customer/signin", identity.Signin)
+	engine.POST("/api/v1/customer/signout", middleware.UserAuth(), identity.Signout)
+
+	customerGroup := engine.Group("/api/v1/customer")
+	customerGroup.Use(middleware.UserAuth())
 
 	for _, opt := range include(order.Routers) {
-		opt(orderGroup)
+		opt(customerGroup)
 	}
 	return engine
 }

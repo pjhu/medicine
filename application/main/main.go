@@ -5,6 +5,7 @@ import (
 	_ "medicine/application/main/resources/db/initialize"
 	_ "medicine/common/main/datasource"
 	_ "medicine/common/main/log"
+	_ "medicine/common/main/cache"
 
 	log "github.com/sirupsen/logrus"
 )
