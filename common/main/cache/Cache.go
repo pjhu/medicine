@@ -32,20 +32,20 @@ func init() {
 	}
 }
 
-// Set put value to cache
-func Set (namepace string, key string, value interface {}) {
+// StoreBy put value to cache
+func StoreBy(namepace string, key string, value interface {}) error {
 	serialized, err := json.Marshal(value)
 	log.Info(serialized)
 	if err != nil {
 		log.Error(err)
-		return
+		return err
 	}
-	v := rdb.Set(ctx, namepace + ":" + key, serialized, 0)
-	log.Info("set:  " + v.FullName())
+	_, err = rdb.Set(ctx, namepace + ":" + key, serialized, 0).Result()
+	return err
 }
 
-// Get get value from cache
-func Get(namepace string, key string, v interface {}) error {
+// GetBy get value from cache
+func GetBy(namepace string, key string, v interface {}) error {
 	serialized, err := rdb.Get(ctx, namepace + ":" + key).Result()
 	if err != nil {
 		log.Error(err)
@@ -55,11 +55,8 @@ func Get(namepace string, key string, v interface {}) error {
 	return err
 } 
 
-// Delete value form cache
-func Delete(namepace string, key string) {
+// DeleteBy value form cache
+func DeleteBy(namepace string, key string) error {
 	_, err := rdb.Del(ctx, namepace + ":" + key).Result()
-	if err != nil {
-		log.Error(err)
-		return
-	}
+	return err
 }

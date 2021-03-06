@@ -18,6 +18,6 @@ func main() {
 	routerengine := SetupRouterEngine()
 	
 	if err := routerengine.Run(); err != nil {
-		log.Info("startup service failed, err:%v", err)
+		log.WithError(err).Error("startup service failed")
 	}
 }

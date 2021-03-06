@@ -2,7 +2,6 @@ package order
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 
 	log "github.com/sirupsen/logrus"
@@ -19,13 +18,14 @@ func Routers(e *gin.RouterGroup) {
 	e.POST("orders", func(ctx *gin.Context) {
 		var placeOrderCommand ordercommand.PlaceOrderCommand
 		if err := ctx.ShouldBind(&placeOrderCommand); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			ctx.AbortWithError(http.StatusBadRequest, err)
+			return
 		}
 
-		log.Info("controller info:%#v\n", placeOrderCommand)
+		log.Info("controller info: ", placeOrderCommand)
 		placeOrderResponse, err := orderapplicationservice.PlaceOrderHandler(placeOrderCommand)
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			ctx.AbortWithError(err.GetHTTPStatus(), err)
 			return
 		}
 		ctx.JSON(http.StatusCreated, placeOrderResponse)
@@ -34,12 +34,13 @@ func Routers(e *gin.RouterGroup) {
 	e.GET("orders/:id", func(ctx *gin.Context) {
 		var req getAccountRequest
 		if err := ctx.ShouldBindUri(&req); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			ctx.AbortWithError(http.StatusBadRequest, err)
+			return
 		}
 
 		order, err := orderapplicationservice.GetOrderDetail(req.ID)
 		if err != nil {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			ctx.AbortWithError(err.GetHTTPStatus(), err)
 			return
 		}
 		ctx.JSON(http.StatusCreated, order)

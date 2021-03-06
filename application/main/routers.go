@@ -21,17 +21,10 @@ func include(opts ...option) []option {
 func SetupRouterEngine() *gin.Engine {
 
 	engine := gin.Default()
-
-	// Global middleware
-	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
-	// By default gin.DefaultWriter = os.Stdout
-	engine.Use(gin.Logger())
-
-	// Recovery middleware recovers from any panics and writes a 500 if there was one.
-	engine.Use(gin.Recovery())
+	engine.Use(middleware.ErrorHandler())
 
 	engine.POST("/api/v1/customer/signin", identity.Signin)
-	engine.POST("/api/v1/customer/signout", middleware.UserAuth(), identity.Signout)
+	engine.POST("/api/v1/customer/signout", identity.Signout)
 
 	customerGroup := engine.Group("/api/v1/customer")
 	customerGroup.Use(middleware.UserAuth())
