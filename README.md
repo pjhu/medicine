@@ -51,11 +51,12 @@ migrate -source file://application/main/resources/db/migrations -database postgr
 - restfulapi[x]
 - snowflaks[x]
 - validator[x]
-- authentication & authorization
+- authentication[x]
+- authorization
 - test
 - 在k8s中运行
 - 外部请求
-- 统一错误处理
+- 统一错误处理[x]
 - 外部服务调用接口化
 - 分布式事务
 - goroutine

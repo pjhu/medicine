@@ -5,11 +5,13 @@ import (
 	"net/http"
 )
 
+// ErrorWithCode wrap error with code
 type ErrorWithCode struct {
 	Code string
 	Err error
 }
 
+// ErrorResponse for unify repsonse
 type ErrorResponse struct {
 	Code string `json:"code"`
 	ErrorMessage string `json:"message"`
@@ -40,17 +42,24 @@ func NewErrorWithCode(errorCode string, errorMessage string) *ErrorWithCode {
 }
 
 const (
-	// server error code
+	// SystemInternalError server error code
 	SystemInternalError = "SYSTEM_INTERNAL_ERROR"
+	// DatabaseError server error code
 	DatabaseError = "DATABASE_ERROR"
 
-	// client error code
+	// InvalidParameter client error code
 	InvalidParameter = "INVALID_PARAMETER"
+	// ValidationFailed client error code
 	ValidationFailed = "VALIDATION_FAILED"
+	// AlreadySignedInError client error code
 	AlreadySignedInError  = "ALREADY_SIGNED_IN_ERROR"
+	// Unauthorized client error code
 	Unauthorized = "UNAUTHORIZED"
+	// Forbidden client error code
 	Forbidden = "FORBIDDEN"
+	// GetAuthorizerTokenRrror client error code
 	GetAuthorizerTokenRrror = "GET_AUTHORIZER_TOKEN_ERROR"
+	// NoAuthorizerError client error code
 	NoAuthorizerError = "NO_AUTHORIZER_ERROR"
 )
 
