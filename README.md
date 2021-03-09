@@ -8,7 +8,7 @@
 - postgresql
 - pkg/error
 
-## 2. 初次运行
+## 2. 本地初次运行
 
 ### 安装migration CLI
 ```
@@ -19,7 +19,7 @@ brew install golang-migrate
 ```$xslt
 cd docker
 docker build -t postgres-test:11.2 . 
-docker-compose up -d
+docker-compose -f docker-compose-local.yml up -d
 ```
 
 ### Create database
@@ -44,6 +44,12 @@ migrate
 
 cd #{project path}
 migrate -source file://application/main/resources/db/migrations -database postgres://localhost:15432/test?sslmode=disable up
+```
+
+## 3. 直接启动
+### 使用docker compose 启动
+```
+docker-compose up -d
 ```
 
 ## 需要解决
