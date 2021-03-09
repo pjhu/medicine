@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
 
+	"github.com/spf13/viper"
 	log "github.com/sirupsen/logrus"
+	
 )
 
 // RDB for redis client
@@ -16,7 +18,7 @@ var ctx = context.Background()
 
 func init() {
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:56379",
+		Addr:     viper.GetString("redis.addr"),
 		Password: "",  // no password set
 		DB:       0,   // use default DB
 		PoolSize: 100, // 连接池大小

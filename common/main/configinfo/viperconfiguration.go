@@ -9,8 +9,8 @@ import (
 
 func init() {
 	log.Info("initialize viper config")
-	if os.Getenv("profiles_active") != "" {
-		viper.SetConfigName("application" + "-" + os.Getenv("profiles_active"))
+	if os.Getenv("PROFILES_ACTIVE") != "" {
+		viper.SetConfigName("application" + "-" + os.Getenv("PROFILES_ACTIVE"))
 	} else {
 		viper.SetConfigName("application")
 	}
