@@ -63,7 +63,22 @@ open settings.json add, you can search Gopls in setting, and then edit, it will 
 ## 3. 启动
 ### 使用docker compose 启动
 ```
-docker-compose up -d
+cd ordercenter
+docker build -t ordercenter:1.0 .
+```
+
+```
+cd usercenter
+docker build -t usercenter:1.0 .
+```
+
+```
+docker-compose -f devops/docker-compose.yml up -d
+```
+
+```
+创建数据库的脚本位于devops/init.sql
+psql -U postgres 
 ```
 
 ## 需要解决

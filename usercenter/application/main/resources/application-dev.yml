@@ -15,4 +15,7 @@ datasource:
     socketTimeout: 60
 
 redis:
-  addr: "medicine-redis:6379"
+  addr: "redis:6379"
+
+gin:
+  port: ":8080"

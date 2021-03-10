@@ -16,3 +16,6 @@ datasource:
 
 redis:
   addr: "127.0.0.1:56379"
+
+gin:
+  port: ":18080"

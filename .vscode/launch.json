@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "port": 8081,
+            "port": 18080,
             "program": "${workspaceFolder}/usercenter/application/main/",
             "env": {
                 "PROFILES_ACTIVE": "local"
@@ -21,7 +21,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "port": 8082,
+            "port": 28080,
             "program": "${workspaceFolder}/ordercenter/application/main/",
             "env": {
                 "PROFILES_ACTIVE": "local"

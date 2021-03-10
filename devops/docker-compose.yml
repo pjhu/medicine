@@ -21,15 +21,27 @@ services:
 
   redis:
     image: redis:5
-    container_name: medicine-redis
+    container_name: redis
     ports:
       - "56379:6379"
 
-  medicine:
-    image: medicine:1.0
-    container_name: medicine
+  usercenter:
+    image: usercenter:1.0
+    container_name: usercenter
     ports:
       - "18080:8080"
+    environment:
+      PROFILES_ACTIVE: dev
+    links:
+      - postgres-master
+      - postgres-slave
+      - redis
+
+  ordercenter:
+    image: ordercenter:1.0
+    container_name: ordercenter
+    ports:
+      - "28080:8080"
     environment:
       PROFILES_ACTIVE: dev
     links:

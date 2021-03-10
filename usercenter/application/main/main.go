@@ -8,6 +8,7 @@ import (
 	_ "usercenter/common/main/cache"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -17,7 +18,7 @@ func main() {
 	// 初始化路由
 	routerengine := SetupRouterEngine()
 	
-	if err := routerengine.Run(":8081"); err != nil {
+	if err := routerengine.Run(viper.GetString("gin.port")); err != nil {
 		log.WithError(err).Error("startup service failed")
 	}
 }
