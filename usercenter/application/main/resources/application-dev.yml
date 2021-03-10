@@ -1,0 +1,18 @@
+logging:
+  level: DEBUG
+
+
+datasource:
+  master:
+    jdbcUrl: postgres://postgres:123@postgres-master:5432/usercenter?sslmode=disable;
+    username: postgres
+    password: 123
+  slave:
+    jdbcUrl: postgres://postgres:123@postgres-slave:5432/usercenter?sslmode=disable;
+    username: postgres
+    password: 123
+  config:
+    socketTimeout: 60
+
+redis:
+  addr: "medicine-redis:6379"

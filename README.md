@@ -7,26 +7,32 @@
 - xorm
 - postgresql
 - pkg/error
+- logrus
 
 ## 2. 本地初次运行
 
-### 安装migration CLI
+### 安装数据库migration CLI
 ```
 brew install golang-migrate
 ```
 
-### Start postgres
+### build postgres
 ```$xslt
-cd docker
+cd devops/postgresql
 docker build -t postgres-test:11.2 . 
+```
+
+### 启动postgresql, redis
+```
+cd devops
 docker-compose -f docker-compose-local.yml up -d
 ```
 
 ### Create database
 ```$xslt
-创建数据库的脚本位于application/src/main/resources/db/init.sql
+创建数据库的脚本位于devops/init.sql
 
-psql -h localhost -p 15432 -U postgres -W -c "create database test;" 
+psql -U postgres 
 ```
 
 ### DB Migretion
@@ -43,10 +49,18 @@ migrate create -ext sql -dir application/main/resources/db/migrations  create_or
 migrate
 
 cd #{project path}
-migrate -source file://application/main/resources/db/migrations -database postgres://localhost:15432/test?sslmode=disable up
+migrate -source file://application/main/resources/db/migrations -database postgres://localhost:15432/order?sslmode=disable up
 ```
 
-## 3. 直接启动
+### Gopls报错配置
+open settings.json add, you can search Gopls in setting, and then edit, it will auto add flowing config
+```
+"gopls": {
+        "build.experimentalWorkspaceModule": true,
+},
+```
+
+## 3. 启动
 ### 使用docker compose 启动
 ```
 docker-compose up -d
@@ -60,11 +74,15 @@ docker-compose up -d
 - authentication[x]
 - authorization
 - test
-- 在k8s中运行
-- 外部请求
 - 统一错误处理[x]
 - 外部服务调用接口化
+- 反射
+- 并发
+- 网络编程
+- 限流
+- 优雅的关闭重启
 - 分布式事务
+- 性能调优
 - goroutine
 - 垃圾回收
 - model变为私有的，没发捕捉名字映射错误

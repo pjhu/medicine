@@ -1,0 +1,18 @@
+logging:
+  level: DEBUG
+
+
+datasource:
+  master:
+    jdbcUrl: postgres://postgres:123@127.0.0.1:15432/ordercenter?sslmode=disable;
+    username: postgres
+    password: 123
+  slave:
+    jdbcUrl: postgres://postgres:123@127.0.0.1:25432/ordercenter?sslmode=disable;
+    username: postgres
+    password: 123
+  config:
+    socketTimeout: 60
+
+redis:
+  addr: "127.0.0.1:56379"
