@@ -18,4 +18,8 @@ redis:
   addr: "127.0.0.1:56379"
 
 gin:
-  port: ":28080"
+  port: ":38080"
+
+microservice:
+  ordercenter: "http://127.0.0.1:28080"
+  usercenter: "http://127.0.0.1:18080"

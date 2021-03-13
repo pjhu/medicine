@@ -1,19 +1,22 @@
 package middleware
 
 import (
+	"strconv"
 	"github.com/gin-gonic/gin"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/testutils"
-	log "github.com/sirupsen/logrus"
 )
+
+var fwd, _ = forward.New()
 
 // ReverseProxy returns
 func ReverseProxy(target string, path string) gin.HandlerFunc {
-	fwd, _ := forward.New()
 	return func(ctx *gin.Context) {
+		user, _ := ctx.Get(AuthUserKey)
+		userMeta := user.(UserMeta)
 		req := ctx.Request
-		log.Info(req)
 		req.Header = ctx.Request.Header
+		req.Header.Add("userId", strconv.FormatInt(userMeta.Id, 10))
 		req.URL = testutils.ParseURI(target + ctx.Param(path))
 		fwd.ServeHTTP(ctx.Writer, ctx.Request)
 	}

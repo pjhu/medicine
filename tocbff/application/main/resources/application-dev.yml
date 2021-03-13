@@ -19,3 +19,7 @@ redis:
 
 gin:
   port: ":8080"
+
+microservice:
+  ordercenter: "http://ordercenter:8080"
+  usercenter: "http://usercenter:8080"

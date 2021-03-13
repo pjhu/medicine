@@ -1,4 +1,4 @@
-package cache
+package middleware
 
 // UserMeta store in token
 type UserMeta struct {
@@ -6,3 +6,5 @@ type UserMeta struct {
 	Phone string
 	Nickname string
 }
+
+const AuthUserKey = "user"

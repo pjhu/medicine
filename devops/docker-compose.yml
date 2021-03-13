@@ -48,3 +48,13 @@ services:
       - postgres-master
       - postgres-slave
       - redis
+
+  tocbff:
+    image: tocbff:1.0
+    container_name: tocbff
+    ports:
+      - "38080:8080"
+    environment:
+      PROFILES_ACTIVE: dev
+    links:
+      - ordercenter

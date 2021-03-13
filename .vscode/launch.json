@@ -5,6 +5,18 @@
   "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch tocbff",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "port": 38080,
+            "program": "${workspaceFolder}/tocbff/application/main/",
+            "env": {
+                "PROFILES_ACTIVE": "local"
+            },
+            "args": ["local"]
+        },
+        {
             "name": "Launch usercenter",
             "type": "go",
             "request": "launch",

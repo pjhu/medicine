@@ -9,7 +9,7 @@
 - pkg/error
 - logrus
 
-## 2. 本地初次运行
+## 2. 本地运行
 
 ### 安装数据库migration CLI
 ```
@@ -60,7 +60,7 @@ open settings.json add, you can search Gopls in setting, and then edit, it will 
 },
 ```
 
-## 3. 启动
+## 3. docker启动
 ### 使用docker compose 启动
 ```
 cd ordercenter
@@ -70,6 +70,11 @@ docker build -t ordercenter:1.0 .
 ```
 cd usercenter
 docker build -t usercenter:1.0 .
+```
+
+```
+cd tocbff
+docker build -t tocbff:1.0 .
 ```
 
 ```
@@ -87,15 +92,16 @@ psql -U postgres
 - snowflaks[x]
 - validator[x]
 - authentication[x]
-- authorization
-- test
 - 统一错误处理[x]
-- 外部服务调用接口化
+- reverse proxy[x]
+- external http client[x]
+- 优雅的关闭重启
+- 限流
+- test
+- authorization
 - 反射
 - 并发
 - 网络编程
-- 限流
-- 优雅的关闭重启
 - 分布式事务
 - 性能调优
 - goroutine

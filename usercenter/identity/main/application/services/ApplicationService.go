@@ -66,3 +66,23 @@ func Signout(fullTokenString string) (e *errors.ErrorWithCode) {
 	}
 	return nil
 }
+
+// ValidateToken for validate token, refresh token, return user meta
+func ValidateToken(fullTokenString string) (userMeta *cache.UserMeta, e *errors.ErrorWithCode) {
+	tokenString, err := cache.ExtractTokenKey(fullTokenString)
+	if err != nil {
+		log.Error(err)
+		return userMeta, errors.NewErrorWithCode(errors.SystemInternalError, "error token format")
+	}
+	
+	err = cache.GetBy(cache.UserAuthNameSpace, tokenString, &userMeta)
+	if err != nil {
+		log.Error(err)
+		return userMeta, errors.NewErrorWithCode(errors.SystemInternalError, "token invalid")
+	}
+	return userMeta, nil
+}
+
+func refreshToken(token string) {
+	log.Info("refresh token")
+}

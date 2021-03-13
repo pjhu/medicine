@@ -25,6 +25,8 @@ func SetupRouterEngine() *gin.Engine {
 	engine.POST("/api/v1/customer/signin", identity.Signin)
 	engine.POST("/api/v1/customer/signout", identity.Signout)
 
+	engine.POST("/internal-api/v1/varify-token", identity.ValidateToken)
+
 	customerGroup := engine.Group("/api/v1/customer")
 	customerGroup.Use(middleware.UserAuth())
 
