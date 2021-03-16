@@ -8,6 +8,9 @@
 - postgresql
 - pkg/error
 - logrus
+- oxy
+- resty
+- heimdall
 
 ## 2. 本地运行
 
@@ -95,15 +98,13 @@ psql -U postgres
 - 统一错误处理[x]
 - reverse proxy[x]
 - external http client[x]
-- 优雅的关闭重启
 - 限流
+- tracking
 - test
 - authorization
-- 反射
 - 并发
-- 网络编程
-- 分布式事务
-- 性能调优
 - goroutine
 - 垃圾回收
+- 分布式事务
+- 性能调优
 - model变为私有的，没发捕捉名字映射错误
