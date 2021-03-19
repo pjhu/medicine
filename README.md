@@ -1,16 +1,20 @@
 ## 1. 技术栈
 
 - GO 1.6
-- gin-gonic/gin
-- viper
-- golang-migrate
-- xorm
-- postgresql
-- pkg/error
-- logrus
-- oxy
-- resty
-- heimdall
+- gin-gonic/gin 【web框架】
+- viper 【配置文件处理】
+- golang-migrate 【数据库migrate】
+- xorm 【ORM框架】
+- postgresql 【数据库驱动】
+- snowflaks【Id generator】
+- pkg/error 【错误处理】
+- logrus 【日志】
+- oxy 【bff转发】
+- resty 【访问外部服务】
+- hystrix-go 【服务熔断降级】
+- kong/ratelimit 【网关限流】
+- tracking
+- test
 
 ## 2. 本地运行
 
@@ -90,17 +94,8 @@ psql -U postgres
 ```
 
 ## 需要解决
-- exception[x]
-- restfulapi[x]
-- snowflaks[x]
 - validator[x]
-- authentication[x]
 - 统一错误处理[x]
-- reverse proxy[x]
-- external http client[x]
-- 限流
-- tracking
-- test
 - authorization
 - 并发
 - goroutine
