@@ -1,0 +1,60 @@
+version: '3'
+services:
+  postgres-master:
+    image: postgres-test:11.2
+    container_name: postgres-master
+    ports:
+      - 15432:5432
+    environment:
+      PG_ROLE: master
+      POSTGRES_PASSWORD: 123
+  postgres-slave:
+    image: postgres-test:11.2
+    container_name: postgres-slave
+    ports:
+      - 25432:5432
+    depends_on:
+      - postgres-master
+    environment:
+      PG_ROLE: slave
+      PG_MASTER_SERVICE_HOST: postgres-master
+
+  redis:
+    image: redis:6.2.6
+    container_name: redis
+    ports:
+      - "56379:6379"
+
+  usercenter:
+    image: usercenter:1.0
+    container_name: usercenter
+    ports:
+      - "18080:8080"
+    environment:
+      PROFILES_ACTIVE: dev
+    links:
+      - postgres-master
+      - postgres-slave
+      - redis
+
+  ordercenter:
+    image: ordercenter:1.0
+    container_name: ordercenter
+    ports:
+      - "28080:8080"
+    environment:
+      PROFILES_ACTIVE: dev
+    links:
+      - postgres-master
+      - postgres-slave
+      - redis
+
+  tocbff:
+    image: tocbff:1.0
+    container_name: tocbff
+    ports:
+      - "38080:8080"
+    environment:
+      PROFILES_ACTIVE: dev
+    links:
+      - ordercenter

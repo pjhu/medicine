@@ -12,9 +12,10 @@
 - oxy 【bff转发】
 - resty 【访问外部服务】
 - hystrix-go 【服务熔断降级】
-- kong/ratelimit 【网关限流】
+- cosmtrek/air【热加载】
 - tracking
 - test
+- kong/ratelimit 【网关限流】
 
 ## 2. 本地运行
 
@@ -23,40 +24,25 @@
 brew install golang-migrate
 ```
 
-### build postgres
-```$xslt
-cd devops/postgresql
-docker build -t postgres-test:11.2 . 
-```
-
-### 启动postgresql, redis
+### 启动mysql, redis
 ```
 cd devops
-docker-compose -f docker-compose-local.yml up -d
-```
-
-### Create database
-```$xslt
-创建数据库的脚本位于devops/init.sql
-
-psql -U postgres 
+docker-compose up -d
 ```
 
 ### DB Migretion
 https://github.com/golang-migrate/migrate
 
+创建table文件，添加sql内容
 ```
-create table 
-
 cd #{project path}
 migrate create -ext sql -dir application/main/resources/db/migrations  create_order_table
 ```
 
+执行迁移命令
 ```
-migrate
-
 cd #{project path}
-migrate -source file://application/main/resources/db/migrations -database postgres://localhost:15432/order?sslmode=disable up
+migrate -source "file://application/main/resources/db/migrations" -database "mysql://root:123@tcp(localhost:3306)/ordercenter" up
 ```
 
 ### Gopls报错配置
@@ -86,11 +72,6 @@ docker build -t tocbff:1.0 .
 
 ```
 docker-compose -f devops/docker-compose.yml up -d
-```
-
-```
-创建数据库的脚本位于devops/init.sql
-psql -U postgres 
 ```
 
 ## 需要解决

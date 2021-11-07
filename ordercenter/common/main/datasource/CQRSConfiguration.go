@@ -2,7 +2,8 @@ package cqrs
 
 import (
 	"github.com/pkg/errors"
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
+	
 	"xorm.io/xorm"
 	xormlog "xorm.io/xorm/log"
 	"xorm.io/xorm/names"
@@ -23,7 +24,7 @@ func init() {
 	}
 
 	var err error
-	Engine, err = xorm.NewEngineGroup("postgres", conns)
+	Engine, err = xorm.NewEngineGroup("mysql", conns)
 	if err != nil {
 		log.Error(errors.Wrap(err, "fail to create db engine group"))
 		panic("fail to create db engine group")

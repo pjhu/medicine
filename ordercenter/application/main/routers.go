@@ -23,7 +23,7 @@ func SetupRouterEngine() *gin.Engine {
 	engine.Use(middleware.ErrorHandler())
 
 	customerGroup := engine.Group("/api/v1/customer")
-	customerGroup.Use(middleware.UserAuth())
+	// customerGroup.Use(middleware.UserAuth())
 
 	for _, opt := range include(order.Routers) {
 		opt(customerGroup)

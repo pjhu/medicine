@@ -1,2 +1,2 @@
-CREATE DATABASE "ordercenter" ENCODING 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
-CREATE DATABASE "usercenter" ENCODING 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+CREATE DATABASE `ordercenter` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE `usercenter` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
