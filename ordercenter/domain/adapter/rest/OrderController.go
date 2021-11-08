@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	log "github.com/sirupsen/logrus"
-	ordercommand "ordercenter/core/main/application/command"
-	orderapplicationservice "ordercenter/core/main/application/services"
+	ordercommand "ordercenter/domain/application/command"
+	orderapplicationservice "ordercenter/domain/application/services"
 )
 
 type getAccountRequest struct {

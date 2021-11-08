@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"ordercenter/common/main/errors"
+	"ordercenter/common/errors"
 
 	"github.com/gin-gonic/gin"
 )

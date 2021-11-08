@@ -1,10 +1,10 @@
-package main
+package router
 
 import (
 	"github.com/gin-gonic/gin"
 
-	order "ordercenter/core/main/adapter/rest"
-	middleware "ordercenter/common/main/middleware"
+	order "ordercenter/domain/adapter/rest"
+	middleware "ordercenter/common/middleware"
 )
 
 type option func(*gin.RouterGroup)

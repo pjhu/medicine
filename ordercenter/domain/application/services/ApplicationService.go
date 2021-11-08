@@ -3,12 +3,12 @@ package orderapplicationservice
 import (
 	log "github.com/sirupsen/logrus"
 
-	"ordercenter/common/main/errors"
-	cqrs "ordercenter/common/main/datasource"
-	IdGenerator "ordercenter/common/main/idgenerator"
-	ordercommand "ordercenter/core/main/application/command"
-	orderresponse "ordercenter/core/main/application/response"
-	ordermodel "ordercenter/core/main/domain/models"
+	"ordercenter/common/errors"
+	cqrs "ordercenter/common/datasource"
+	IdGenerator "ordercenter/common/idgenerator"
+	ordercommand "ordercenter/domain/application/command"
+	orderresponse "ordercenter/domain/application/response"
+	ordermodel "ordercenter/domain/models"
 )
 
 // PlaceOrderHandler for create order

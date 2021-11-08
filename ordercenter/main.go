@@ -1,14 +1,16 @@
 package main
 
 import (
-	_ "ordercenter/common/main/configinfo"
-	_ "ordercenter/application/main/resources/db/initialize"
-	_ "ordercenter/common/main/datasource"
-	_ "ordercenter/common/main/log"
-	_ "ordercenter/common/main/cache"
+	_ "ordercenter/common/configinfo"
+	// _ "ordercenter/application/resources/db/initialize"
+	_ "ordercenter/common/datasource"
+	_ "ordercenter/common/log"
+	_ "ordercenter/common/cache"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+
+	router "ordercenter/router"
 )
 
 func init() {
@@ -16,7 +18,7 @@ func init() {
 
 func main() {
 	// 初始化路由
-	routerengine := SetupRouterEngine()
+	routerengine := router.SetupRouterEngine()
 	
 	if err := routerengine.Run(viper.GetString("gin.port")); err != nil {
 		log.WithError(err).Error("startup service failed")
