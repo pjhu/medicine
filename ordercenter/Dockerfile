@@ -8,11 +8,11 @@ ENV GO111MODULE=on \
 WORKDIR /build
 COPY . .
 
-RUN cd /build/application/main && go build -o app .
+RUN go build -o app .
 
 FROM scratch
 
-COPY --from=builder /build/application/main/app /
-COPY --from=builder /build/application/main/resources/ /resources/
+COPY --from=builder /build/app /
+COPY --from=builder /build/evn/ /evn/
 
 ENTRYPOINT ["/app"]

@@ -1,7 +1,6 @@
 logging:
   level: DEBUG
 
-
 datasource:
   master:
     jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?multiStatements=true

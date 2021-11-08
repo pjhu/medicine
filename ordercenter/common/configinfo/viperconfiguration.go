@@ -15,7 +15,7 @@ func init() {
 		viper.SetConfigName("application")
 	}
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./resources")
+	viper.AddConfigPath("./env")
 	err := viper.ReadInConfig() // 查找并读取配置文件
 	if err != nil {             // 处理读取配置文件的错误
 		log.Error(errors.Wrap(err, "fail to read application config file"))

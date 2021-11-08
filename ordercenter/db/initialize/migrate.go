@@ -15,7 +15,7 @@ import (
 func init() {
 	log.Info("--- Starting DB Migrate ---")
 	log.Info(viper.GetString("datasource.master.jdbcUrl"))
-	m, err := migrate.New("file://resources/db/migrations/", "mysql://" + viper.GetString("datasource.master.jdbcUrl"))
+	m, err := migrate.New("file://db/migrations/", "mysql://" + viper.GetString("datasource.master.jdbcUrl"))
 	if err != nil {
 		log.Error(errors.Wrap(err, "fail to start new migrate engine"))
 		panic("fail to start new migrate engine")

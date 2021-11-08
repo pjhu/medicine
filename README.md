@@ -36,13 +36,13 @@ https://github.com/golang-migrate/migrate
 创建table文件，添加sql内容
 ```
 cd #{project path}
-migrate create -ext sql -dir application/main/resources/db/migrations  create_order_table
+migrate create -ext sql -dir db/migrations  create_order_table
 ```
 
 执行迁移命令
 ```
 cd #{project path}
-migrate -source "file://application/main/resources/db/migrations" -database "mysql://root:123@tcp(localhost:3306)/ordercenter" up
+migrate -source "file://db/migrations" -database "mysql://root:123@tcp(localhost:3306)/ordercenter" up
 ```
 
 ### Gopls报错配置
