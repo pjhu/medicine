@@ -1,27 +1,30 @@
 package main
 
 import (
-	_ "ordercenter/common/configinfo"
-
-	_ "ordercenter/common/cache"
-	// _ "ordercenter/application/env/db/initialize"
-	_ "ordercenter/common/datasource"
-	_ "ordercenter/common/log"
-
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"ordercenter/router"
+	"ordercenter/internal/pkg/cache"
+	"ordercenter/internal/pkg/datasource"
+	"ordercenter/internal/pkg/logconf"
+	"ordercenter/internal/pkg/viperconf"
+	"ordercenter/routers"
 )
 
 func init() {
+	logconf.Init()
+	viperconf.Init()
+	cache.Init()
+	//dbmigrate.Init()
 }
 
 func main() {
+	db := datasource.BuildMysql()
 	// 初始化路由
-	routerengine := router.SetupRouterEngine()
-	
-	if err := routerengine.Run(viper.GetString("gin.port")); err != nil {
-		log.WithError(err).Error("startup service failed")
+	newRouters := routers.Build(db)
+	routerEngine := newRouters.Init()
+
+	if err := routerEngine.Run(viper.GetString("gin.port")); err != nil {
+		logrus.WithError(err).Error("startup service failed")
 	}
 }
