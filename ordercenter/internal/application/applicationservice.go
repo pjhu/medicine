@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"ordercenter/internal/application/command"
 	"ordercenter/internal/application/response"
 	"ordercenter/internal/domain"
@@ -48,8 +47,8 @@ func (appSvc OrderApplicationService) PlaceOrderHandler(placeOrderCommand comman
 	post, err := appSvc.restClient.R().
 		SetBody(`{"userId": 1, "orderAmount": 1}`).
 		SetResult(&Account{}).
-		Post(viper.GetString("microservice.account") + "/api/v1/accounts/decrease")
-	logrus.Info(post)
+		Post("http://localhost:48080/api/v1/accounts/decrease")
+	logrus.Info("account response: ",post)
 	if err != nil {
 		logrus.Error(err)
 		return result, errors.NewErrorWithCode(errors.SystemInternalError, "decrease account error")
