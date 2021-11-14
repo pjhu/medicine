@@ -2,17 +2,17 @@ package middleware
 
 import (
 	"net/http"
+
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"bff/common/main/errors"
-	"bff/common/main/lib"
+	"bff/internal/pkg/httpclient"
 )
 
-type tokenCommond struct {
+type tokenCommand struct {
 	Token string
 }
 
@@ -34,26 +34,43 @@ func UserAuth() gin.HandlerFunc {
 		
 		var resp *resty.Response
 		var err error
-		hystrix.Do("user_auth", func() (error) {
-			resp, err = lib.Client.R().
-				SetBody(tokenCommond{Token: fullTokenString}).
-				SetResult(&userMeta).
-				Post(viper.GetString("microservice.usercenter") + "/internal-api/v1/varify-token")
+		hystrixErr := hystrix.Do("user_auth",
+			func() error {
+				resp, err = httpclient.Client.R().
+					SetBody(tokenCommand{Token: fullTokenString}).
+					SetResult(&userMeta).
+					Post(viper.GetString("microservice.usercenter") + "/internal-api/v1/varify-token")
 
-			if resp.StatusCode() != http.StatusOK|| err != nil {
-				log.Info(resp,err)
-				ctx.Header("Content-Type", "application/json")
-				ctx.AbortWithError(http.StatusForbidden, errors.NewErrorWithCode(errors.SystemInternalError, "no auth"))
+				if resp.StatusCode() != http.StatusOK || err != nil {
+					logrus.Info(resp, err)
+					ctx.Header("Content-Type", "application/json")
+					ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+						"data":    nil,
+						"message": "no auth",
+					})
+					return nil
+				}
+				ctx.Set(AuthUserKey, userMeta)
 				return nil
-			}
-			ctx.Set(AuthUserKey, userMeta)
-			return nil
-		}, func(err error) error {
-			log.Error("do this when services are down", err)
+			},
+			func(err error) error {
+				logrus.Error("do this when services are down", err)
+				ctx.Header("Content-Type", "application/json")
+				ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+					"data":    nil,
+					"message": "hystrix open",
+				})
+				return nil
+			})
+		if hystrixErr != nil {
+			logrus.Error("hystrix error", err)
 			ctx.Header("Content-Type", "application/json")
-			ctx.AbortWithError(http.StatusForbidden, errors.NewErrorWithCode(errors.SystemInternalError, "hystrix open"))
-			return nil
-		})
+			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"data":    nil,
+				"message": "hystrix error",
+			})
+			return
+		}
 		ctx.Set(AuthUserKey, userMeta)
 		ctx.Next()
 	}

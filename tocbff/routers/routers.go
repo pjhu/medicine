@@ -1,10 +1,10 @@
-package main
+package routers
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
-	middleware "bff/common/main/middleware"
+	"bff/internal/pkg/middleware"
 )
 
 // SetupRouterEngine 初始化

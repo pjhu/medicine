@@ -9,7 +9,6 @@ require (
 	github.com/go-resty/resty/v2 v2.5.0
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
-	github.com/joonix/log v0.0.0-20200409080653-9c1d2ceb5f1d
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.7.1

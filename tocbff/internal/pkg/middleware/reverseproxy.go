@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/testutils"

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"bff/common/main/errors"
+	"bff/internal/pkg/errors"
 
 	"github.com/gin-gonic/gin"
 )

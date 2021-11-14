@@ -1,10 +1,11 @@
-package lib
+package httpclient
 
 import(
 	"time"
+
 	"github.com/go-resty/resty/v2"
 
-	"bff/common/main/errors"
+	"bff/internal/pkg/errors"
 )
 
 var Client = resty.New()
