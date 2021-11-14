@@ -1,7 +1,9 @@
 package service
 
 import (
+	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"ordercenter/internal/application/command"
 	"ordercenter/internal/application/response"
 	"ordercenter/internal/domain"
@@ -16,12 +18,19 @@ type IApplicationService interface {
 
 type OrderApplicationService struct {
 	repository domain.IRepository
+	restClient *resty.Client
 }
 
-func Build(repo domain.IRepository) IApplicationService {
+func Build(repo domain.IRepository, client *resty.Client) IApplicationService {
 	return OrderApplicationService {
 		repository: repo,
+		restClient: client,
 	}
+}
+
+type Account struct {
+	orderId string
+	orderAmount int64
 }
 
 // PlaceOrderHandler for create order
@@ -30,12 +39,22 @@ func (appSvc OrderApplicationService) PlaceOrderHandler(placeOrderCommand comman
 	logrus.Info("application service info: ", placeOrderCommand)
 	
 	newOrder := domain.PlaceOrder(idgenerator.NewId(), placeOrderCommand.Quantity, "", "", "")
-
 	_, err := appSvc.repository.InsertOne(&newOrder)
 	if err != nil {
 		logrus.Error(err)
 		return result, errors.NewErrorWithCode(errors.SystemInternalError, "insert order error")
 	}
+
+	post, err := appSvc.restClient.R().
+		SetBody(`{"userId": 1, "orderAmount": 1}`).
+		SetResult(&Account{}).
+		Post(viper.GetString("microservice.account") + "/api/v1/accounts/decrease")
+	logrus.Info(post)
+	if err != nil {
+		logrus.Error(err)
+		return result, errors.NewErrorWithCode(errors.SystemInternalError, "decrease account error")
+	}
+
 	result = response.PlaceOrderResponse{ID: newOrder.Id}
 	return result, nil
 }

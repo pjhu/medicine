@@ -10,13 +10,8 @@ import (
 	"xorm.io/xorm/names"
 )
 
-var mysql *xorm.EngineGroup
-
 func BuildMysql() *xorm.EngineGroup {
-	if mysql == nil {
-		mysql = initMysql()
-	}
-	return mysql
+	return initMysql()
 }
 
 // Init DBConnect for db connection

@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-resty/resty/v2"
 	"xorm.io/xorm"
 
 	"ordercenter/internal/adapter/persistence"
@@ -18,10 +19,10 @@ type Router struct {
 	orderContr controller.IOrderController
 }
 
-func Build(db *xorm.EngineGroup) IRouter {
+func Build(db *xorm.EngineGroup, restClient *resty.Client) IRouter {
 	repo := persistence.BuildMysqlRepo(db)
 	return Router {
-		orderContr: controller.Build(service.Build(repo)),
+		orderContr: controller.Build(service.Build(repo, restClient)),
 	}
 }
 
