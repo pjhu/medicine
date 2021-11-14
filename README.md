@@ -59,9 +59,16 @@ open settings.json add, you can search Gopls in setting, and then edit, it will 
 },
 ```
 
-## test example
+## test 
+
+### create mock file
 ```
 /Users/jhpeng/.asdf/installs/golang/1.16.10/packages/bin/mockgen -source=internal/domain/repository.go -destination=mock/orderrepository_mock.go -package=mock
+```
+
+### run all test
+```
+go test ./... -v
 ```
 
 ## 3. docker启动

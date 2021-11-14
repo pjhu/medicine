@@ -36,15 +36,14 @@ func TestOrderController_placeOrder(t *testing.T) {
 	apitest.New().
 		Handler(router).
 		Post("/api/v1/customer/orders").
-		Header("Content-Type", "application/json; charset=utf-8").
-		Body(`{
+		JSON(`{
 			"productId": 1,
 			"sku": "1",
 			"quantity": 1,
 			"address": "长宁区"
 		}`).
 		Expect(t).
-		Assert(jsonpath.Equal(`$.id`, float64(1457312267728064512))).
+		Assert(jsonpath.Equal(`$.data.id`, float64(1457312267728064512))).
 		Status(http.StatusCreated).
 		End()
 }
@@ -79,11 +78,11 @@ func TestOrderController_getOrderDetail(t *testing.T) {
 		Handler(router).
 		Get("/api/v1/customer/orders/1457312267728064512").
 		Expect(t).
-		Assert(jsonpath.Equal(`$.Id`, float64(1457312267728064512))).
-		Assert(jsonpath.Equal(`$.PayChannel`, "alipay")).
-		Assert(jsonpath.Equal(`$.OrderStatus`, "OrderStatus")).
-		Assert(jsonpath.Equal(`$.CreatedBy`, "CreatedBy")).
-		Assert(jsonpath.Equal(`$.LastModifiedBy`, "LastModifiedBy")).
+		Assert(jsonpath.Equal(`$.data.Id`, float64(1457312267728064512))).
+		Assert(jsonpath.Equal(`$.data.PayChannel`, "alipay")).
+		Assert(jsonpath.Equal(`$.data.OrderStatus`, "OrderStatus")).
+		Assert(jsonpath.Equal(`$.data.CreatedBy`, "CreatedBy")).
+		Assert(jsonpath.Equal(`$.data.LastModifiedBy`, "LastModifiedBy")).
 		Status(http.StatusOK).
 		End()
 }
