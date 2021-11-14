@@ -5,30 +5,38 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"sync"
 	"xorm.io/xorm"
 	"xorm.io/xorm/log"
 	"xorm.io/xorm/names"
 )
 
+var (
+	once sync.Once
+	mysql *xorm.EngineGroup
+)
+
 func BuildMysql() *xorm.EngineGroup {
-	return initMysql()
+	once.Do(func() {
+		initMysql()
+	})
+	return mysql
 }
 
 // Init DBConnect for db connection
-func initMysql() (engine *xorm.EngineGroup){
+func initMysql() {
 	conn := []string{
 		viper.GetString("datasource.master.jdbcUrl"), // first one is master
 		viper.GetString("datasource.slave.jdbcUrl"), // slave
 	}
 
 	var err error
-	engine, err = xorm.NewEngineGroup("mysql", conn)
+	mysql, err = xorm.NewEngineGroup("mysql", conn)
 	if err != nil {
 		logrus.Error(errors.Wrap(err, "fail to create db engine group"))
 		panic("fail to create db engine group")
 	}
-	engine.ShowSQL(true)
-	engine.SetLogLevel(log.LOG_DEBUG)
-	engine.SetMapper(names.GonicMapper{})
-	return engine
+	mysql.ShowSQL(true)
+	mysql.SetLogLevel(log.LOG_DEBUG)
+	mysql.SetMapper(names.GonicMapper{})
 }

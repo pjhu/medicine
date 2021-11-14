@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"ordercenter/internal/pkg/httpclient"
 
 	"ordercenter/internal/pkg/cache"
 	"ordercenter/internal/pkg/datasource"
+	"ordercenter/internal/pkg/httpclient"
 	"ordercenter/internal/pkg/logconf"
 	"ordercenter/internal/pkg/viperconf"
 	"ordercenter/routers"

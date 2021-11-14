@@ -8,7 +8,7 @@ import (
 const AuthUserKey = "user"
 
 // UserAuth returns a Basic HTTP Authorization middleware
-// the key is the user name and the value is the password.
+// the key is the username and the value is the password.
 func UserAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		validateAndRefreshToken(ctx)
