@@ -19,6 +19,12 @@
 
 ## 2. 本地运行
 
+### 安装依赖包
+```
+go mod tidy
+go mod download
+```
+
 ### 安装数据库migration CLI
 ```
 brew install golang-migrate
@@ -42,7 +48,7 @@ migrate create -ext sql -dir db/migrations  create_order_table
 执行迁移命令
 ```
 cd #{project path}
-migrate -source "file://db/migrations" -database "mysql://root:123@tcp(localhost:3306)/ordercenter" up
+migrate -source "file://scripts/db/migrations" -database "mysql://root:123@tcp(localhost:3306)/usercenter" up
 ```
 
 ### Gopls报错配置
@@ -51,6 +57,11 @@ open settings.json add, you can search Gopls in setting, and then edit, it will 
 "gopls": {
         "build.experimentalWorkspaceModule": true,
 },
+```
+
+## test example
+```
+/Users/jhpeng/.asdf/installs/golang/1.16.10/packages/bin/mockgen -source=internal/domain/repository.go -destination=mock/orderrepository_mock.go -package=mock
 ```
 
 ## 3. docker启动
@@ -83,4 +94,3 @@ docker-compose -f devops/docker-compose.yml up -d
 - 垃圾回收
 - 分布式事务
 - 性能调优
-- model变为私有的，没发捕捉名字映射错误
