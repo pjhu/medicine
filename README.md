@@ -52,18 +52,19 @@ migrate -source "file://scripts/db/migrations" -database "mysql://root:123@tcp(l
 ```
 
 ### Gopls报错配置
-open settings.json add, you can search Gopls in setting, and then edit, it will auto add flowing config
 ```
-"gopls": {
-        "build.experimentalWorkspaceModule": true,
-},
+https://commandnotfound.cn/go/5/577/VSCode-%E5%AE%89%E8%A3%85-Go-%E6%8F%92%E4%BB%B6%E5%A4%B1%E8%B4%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88
 ```
 
-## test 
+## test
 
 ### create mock file
 ```
-/Users/jhpeng/.asdf/installs/golang/1.16.10/packages/bin/mockgen -source=internal/domain/repository.go -destination=mock/orderrepository_mock.go -package=mock
+go install github.com/golang/mock/mockgen@v1.6.0
+
+/Users/jinhupeng/.asdf/installs/golang/1.18.1/packages/bin/mockgen -source=domain/repository.go -destination=mock/orderrepository_mock.go -package=mock
+
+/Users/jinhupeng/.asdf/installs/golang/1.18.1/packages/bin/mockgen -source=application/applicationservice.go -destination=mock/application_mock.go -package=mock
 ```
 
 ### run all test
@@ -96,7 +97,6 @@ docker-compose -f devops/docker-compose.yml up -d
 - validator[x]
 - 统一错误处理[x]
 - authorization
-- 并发
 - goroutine
 - 垃圾回收
 - 分布式事务
