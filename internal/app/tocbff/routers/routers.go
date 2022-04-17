@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/middleware"
+	"pjhu/medicine/internal/pkg/middleware"
 )
 
 // SetupRouterEngine 初始化

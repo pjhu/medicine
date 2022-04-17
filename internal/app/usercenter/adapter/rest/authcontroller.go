@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"pjhu/medicine/pkg/cache"
-	"pjhu/medicine/pkg/usercenter/application"
+	"pjhu/medicine/internal/app/usercenter/application"
+	"pjhu/medicine/internal/pkg/cache"
 )
 
 type IAuthController interface {

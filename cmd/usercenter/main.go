@@ -4,10 +4,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/pkg/cache"
-	"pjhu/medicine/pkg/datasource"
+	"pjhu/medicine/internal/app/usercenter/routers"
+	"pjhu/medicine/internal/pkg/cache"
+	"pjhu/medicine/internal/pkg/datasource"
 	"pjhu/medicine/pkg/logconf"
-	"pjhu/medicine/pkg/usercenter/routers"
 	"pjhu/medicine/pkg/viperconf"
 )
 

@@ -5,7 +5,7 @@
 package mock
 
 import (
-	domain "pjhu/medicine/pkg/ordercenter/domain"
+	domain "pjhu/medicine/internal/app/ordercenter/domain"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"

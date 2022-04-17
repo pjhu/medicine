@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/pkg/account/routers"
+	"pjhu/medicine/internal/app/account/routers"
 	"pjhu/medicine/pkg/logconf"
 	"pjhu/medicine/pkg/viperconf"
 )

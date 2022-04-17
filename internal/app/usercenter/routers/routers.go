@@ -4,11 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"xorm.io/xorm"
 
-	"pjhu/medicine/middleware"
-	"pjhu/medicine/pkg/cache"
-	"pjhu/medicine/pkg/usercenter/adapter/persistence"
-	"pjhu/medicine/pkg/usercenter/adapter/rest"
-	"pjhu/medicine/pkg/usercenter/application"
+	"pjhu/medicine/internal/app/usercenter/adapter/persistence"
+	"pjhu/medicine/internal/app/usercenter/adapter/rest"
+	"pjhu/medicine/internal/app/usercenter/application"
+	"pjhu/medicine/internal/pkg/cache"
+	"pjhu/medicine/internal/pkg/middleware"
 )
 
 type IRouter interface {

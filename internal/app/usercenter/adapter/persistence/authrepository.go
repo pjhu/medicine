@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"xorm.io/xorm"
 
-	"pjhu/medicine/pkg/ordercenter/domain"
+	"pjhu/medicine/internal/app/usercenter/domain"
 )
 
 type Repo struct {
@@ -17,7 +17,7 @@ func BuildMysqlRepo(db *xorm.EngineGroup) domain.IRepository {
 	}
 }
 
-func (r *Repo) InsertOne(userOrder *domain.UserOrder) (int64, error) {
+func (r *Repo) InsertOne(member *domain.Member) (int64, error) {
 
 	session := r.DB.NewSession()
 	err := session.Close()
@@ -32,7 +32,7 @@ func (r *Repo) InsertOne(userOrder *domain.UserOrder) (int64, error) {
 		return 0, err
 	}
 
-	_, err = r.DB.InsertOne(userOrder)
+	_, err = r.DB.InsertOne(member)
 	if err != nil {
 		logrus.Error(err)
 		err := session.Rollback()
@@ -44,10 +44,18 @@ func (r *Repo) InsertOne(userOrder *domain.UserOrder) (int64, error) {
 	return 1, err
 }
 
-func (r *Repo) Get(userOrder *domain.UserOrder) (*domain.UserOrder, error) {
-	_, err := r.DB.Get(userOrder)
+func (r *Repo) Get(member *domain.Member) (*domain.Member, error) {
+	_, err := r.DB.Get(member)
 	if err != nil {
 		return nil, err
 	}
-	return userOrder, err
+	return member, err
+}
+
+func (r *Repo) Exist(member *domain.Member) (bool, error) {
+	exist, err := r.DB.Exist(member)
+	if err != nil {
+		return false, err
+	}
+	return exist, err
 }

@@ -5,11 +5,11 @@ import (
 	"github.com/go-resty/resty/v2"
 	"xorm.io/xorm"
 
-	"pjhu/medicine/middleware"
-	"pjhu/medicine/pkg/cache"
-	"pjhu/medicine/pkg/ordercenter/adapter/persistence"
-	"pjhu/medicine/pkg/ordercenter/adapter/rest"
-	"pjhu/medicine/pkg/ordercenter/application"
+	"pjhu/medicine/internal/app/ordercenter/adapter/persistence"
+	"pjhu/medicine/internal/app/ordercenter/adapter/rest"
+	"pjhu/medicine/internal/app/ordercenter/application"
+	"pjhu/medicine/internal/pkg/cache"
+	"pjhu/medicine/internal/pkg/middleware"
 )
 
 type IRouter interface {

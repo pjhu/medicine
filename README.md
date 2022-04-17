@@ -1,6 +1,6 @@
 ## 1. 技术栈
 
-- GO 1.6
+- GO 1.8.1
 - gin-gonic/gin 【web框架】
 - viper 【配置文件处理】
 - golang-migrate 【数据库migrate】

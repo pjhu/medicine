@@ -1,9 +1,9 @@
 package application
 
 import (
+	"pjhu/medicine/internal/app/ordercenter/domain"
 	"pjhu/medicine/pkg/errors"
 	"pjhu/medicine/pkg/idgenerator"
-	"pjhu/medicine/pkg/ordercenter/domain"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"

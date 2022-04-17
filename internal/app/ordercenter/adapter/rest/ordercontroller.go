@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"pjhu/medicine/pkg/ordercenter/application"
+	"pjhu/medicine/internal/app/ordercenter/application"
 )
 
 type IOrderController interface {

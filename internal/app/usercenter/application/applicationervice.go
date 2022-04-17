@@ -3,10 +3,10 @@ package application
 import (
 	"github.com/sirupsen/logrus"
 
-	"pjhu/medicine/pkg/cache"
+	"pjhu/medicine/internal/app/usercenter/domain"
+	"pjhu/medicine/internal/pkg/cache"
 	"pjhu/medicine/pkg/errors"
 	"pjhu/medicine/pkg/idgenerator"
-	"pjhu/medicine/pkg/usercenter/domain"
 )
 
 type IApplicationService interface {

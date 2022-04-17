@@ -10,9 +10,9 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 
-	"pjhu/medicine/pkg/ordercenter/application"
-	"pjhu/medicine/pkg/ordercenter/domain"
-	"pjhu/medicine/pkg/ordercenter/mock"
+	"pjhu/medicine/internal/app/ordercenter/application"
+	"pjhu/medicine/internal/app/ordercenter/domain"
+	"pjhu/medicine/internal/app/ordercenter/mock"
 )
 
 func TestOrderController_placeOrder(t *testing.T) {
