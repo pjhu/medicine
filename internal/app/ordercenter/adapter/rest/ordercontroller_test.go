@@ -10,9 +10,9 @@ import (
 	"github.com/steinfletcher/apitest"
 	jsonpath "github.com/steinfletcher/apitest-jsonpath"
 
-	"pjhu/medicine/internal/app/ordercenter/application"
-	"pjhu/medicine/internal/app/ordercenter/domain"
-	"pjhu/medicine/internal/app/ordercenter/mock"
+	"github.com/pjhu/medicine/internal/app/ordercenter/application"
+	"github.com/pjhu/medicine/internal/app/ordercenter/domain"
+	"github.com/pjhu/medicine/internal/app/ordercenter/mock"
 )
 
 func TestOrderController_placeOrder(t *testing.T) {
@@ -32,8 +32,7 @@ func TestOrderController_placeOrder(t *testing.T) {
 		Times(1)
 
 	router := gin.Default()
-	oc := Build(m)
-	oc.InitRouters(router)
+	InitRouters(router)
 	apitest.New().
 		Handler(router).
 		Post("/api/v1/customer/orders").
@@ -73,8 +72,7 @@ func TestOrderController_getOrderDetail(t *testing.T) {
 		Times(1)
 
 	router := gin.Default()
-	oc := Build(m)
-	oc.InitRouters(router)
+	InitRouters(router)
 	apitest.New().
 		Handler(router).
 		Get("/api/v1/customer/orders/1457312267728064512").

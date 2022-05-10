@@ -6,34 +6,21 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"pjhu/medicine/internal/app/usercenter/application"
-	"pjhu/medicine/internal/pkg/cache"
+	"github.com/pjhu/medicine/internal/app/usercenter/application"
+	"github.com/pjhu/medicine/internal/pkg/cache"
+	"github.com/pjhu/medicine/internal/pkg/datasource"
 )
 
-type IAuthController interface {
-	InitRouters(router *gin.Engine)
-}
-
-type AuthController struct {
-	appSvc application.IApplicationService
-}
-
-func Build(app application.IApplicationService) IAuthController {
-	return AuthController{
-		appSvc: app,
-	}
-}
-
 // InitRouters for order
-func (ac AuthController) InitRouters(router *gin.Engine) {
+func InitRouters(router *gin.Engine) {
 
-	router.POST("/api/v1/customer/signin", ac.signin)
-	router.POST("/api/v1/customer/signout", ac.signout)
-	router.POST("/internal-api/v1/varify-token", ac.validateToken)
+	router.POST("/api/v1/customer/signin", signin)
+	router.POST("/api/v1/customer/signout", signout)
+	router.POST("/internal-api/v1/varify-token", validateToken)
 }
 
 // signin for user authentication
-func (ac AuthController) signin(ctx *gin.Context) {
+func signin(ctx *gin.Context) {
 	var signinCommand application.SigninCommand
 	if err := ctx.ShouldBindJSON(&signinCommand); err != nil {
 
@@ -45,7 +32,9 @@ func (ac AuthController) signin(ctx *gin.Context) {
 		})
 		return
 	}
-	response, err := ac.appSvc.Signin(signinCommand)
+
+	appSvc := application.Builder(datasource.GetDB())
+	response, err := appSvc.Signin(signinCommand)
 	if err != nil {
 		logrus.Error(err)
 		ctx.Header("Content-Type", "application/json")
@@ -62,8 +51,9 @@ func (ac AuthController) signin(ctx *gin.Context) {
 }
 
 // signout for user authentication
-func (ac AuthController) signout(ctx *gin.Context) {
-	err := ac.appSvc.Signout(ctx.GetHeader(cache.AuthorizationHeader))
+func signout(ctx *gin.Context) {
+	appSvc := application.AuthApplicationService{}
+	err := appSvc.Signout(ctx.GetHeader(cache.AuthorizationHeader))
 	if err != nil {
 		logrus.Error(err)
 		ctx.Header("Content-Type", "application/json")
@@ -80,7 +70,7 @@ func (ac AuthController) signout(ctx *gin.Context) {
 }
 
 // validateToken for user authentication
-func (ac AuthController) validateToken(ctx *gin.Context) {
+func validateToken(ctx *gin.Context) {
 	var validateTokenCommand application.ValidateTokenCommand
 	if err := ctx.ShouldBindJSON(&validateTokenCommand); err != nil {
 		logrus.Error(err)
@@ -91,8 +81,8 @@ func (ac AuthController) validateToken(ctx *gin.Context) {
 		})
 		return
 	}
-
-	userMeta, err := ac.appSvc.ValidateToken(validateTokenCommand.Token)
+	appSvc := application.AuthApplicationService{}
+	userMeta, err := appSvc.ValidateToken(validateTokenCommand.Token)
 	if err != nil {
 		logrus.Error(err)
 		ctx.Header("Content-Type", "application/json")

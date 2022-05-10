@@ -3,11 +3,11 @@ logging:
 
 datasource:
   master:
-    jdbcUrl: root:123@tcp(localhost:3306)/usercenter?multiStatements=true
+    jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123
   slave:
-    jdbcUrl: root:123@tcp(localhost:3306)/usercenter?multiStatements=true
+    jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123
   config:

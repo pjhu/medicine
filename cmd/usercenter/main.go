@@ -4,25 +4,24 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/internal/app/usercenter/routers"
-	"pjhu/medicine/internal/pkg/cache"
-	"pjhu/medicine/internal/pkg/datasource"
-	"pjhu/medicine/pkg/logconf"
-	"pjhu/medicine/pkg/viperconf"
+	"github.com/pjhu/medicine/internal/app/usercenter/routers"
+	"github.com/pjhu/medicine/internal/pkg/cache"
+	"github.com/pjhu/medicine/internal/pkg/datasource"
+	"github.com/pjhu/medicine/pkg/logconf"
+	"github.com/pjhu/medicine/pkg/viperconf"
 )
 
 func init() {
 	logconf.Init()
-	viperconf.Init()
+	viperconf.Init("cmd/usercenter")
 	//dbmigrate.Build()
 }
 
 func main() {
-	db := datasource.BuildMysql()
-	rdbRepo := cache.BuildRedis()
+	datasource.Builder()
+	cache.Builder()
 	// 初始化路由
-	newRouters := routers.Build(db, rdbRepo)
-	routerEngine := newRouters.Init()
+	routerEngine := routers.Init()
 
 	if err := routerEngine.Run(viper.GetString("gin.port")); err != nil {
 		logrus.WithError(err).Error("startup service failed")

@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/pkg/httpclient"
+	"github.com/pjhu/medicine/pkg/httpclient"
 )
 
 type tokenCommand struct {

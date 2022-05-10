@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"pjhu/medicine/pkg/errors"
+	"github.com/pjhu/medicine/pkg/errors"
 
 	"github.com/gin-gonic/gin"
 )

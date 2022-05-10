@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SetupRouterEngine 初始化
-func SetupRouterEngine() *gin.Engine {
+// Init 初始化
+func Init() *gin.Engine {
 
 	r := gin.Default()
 

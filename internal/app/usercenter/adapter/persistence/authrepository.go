@@ -1,61 +1,33 @@
 package persistence
 
 import (
+	"github.com/pjhu/medicine/internal/app/usercenter/domain"
 	"github.com/sirupsen/logrus"
-	"xorm.io/xorm"
-
-	"pjhu/medicine/internal/app/usercenter/domain"
+	"gorm.io/gorm"
 )
 
 type Repo struct {
-	DB *xorm.EngineGroup
+	DB *gorm.DB
 }
 
-func BuildMysqlRepo(db *xorm.EngineGroup) domain.IRepository {
+func Builder(db *gorm.DB) domain.IRepository {
 	return &Repo{
 		DB: db,
 	}
 }
 
-func (r *Repo) InsertOne(member *domain.Member) (int64, error) {
+func (r *Repo) InsertOne(member *domain.Member) error {
 
-	session := r.DB.NewSession()
-	err := session.Close()
-	if err != nil {
-		return 0, err
-	}
-
-	// add Begin() before any action
-	err = session.Begin()
-	if err != nil {
+	if err := r.DB.Create(member).Error; err != nil {
 		logrus.Error(err)
-		return 0, err
+		return err
 	}
-
-	_, err = r.DB.InsertOne(member)
-	if err != nil {
-		logrus.Error(err)
-		err := session.Rollback()
-		if err != nil {
-			logrus.Error(err)
-		}
-		return 0, err
-	}
-	return 1, err
+	return nil
 }
 
-func (r *Repo) Get(member *domain.Member) (*domain.Member, error) {
-	_, err := r.DB.Get(member)
-	if err != nil {
-		return nil, err
+func (r *Repo) FindBy(member *domain.Member) error {
+	if err := r.DB.Take(member).Error; err != nil {
+		return err
 	}
-	return member, err
-}
-
-func (r *Repo) Exist(member *domain.Member) (bool, error) {
-	exist, err := r.DB.Exist(member)
-	if err != nil {
-		return false, err
-	}
-	return exist, err
+	return nil
 }

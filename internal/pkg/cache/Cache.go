@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"sync"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -10,11 +11,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-// RDB for redis client
-var rdb *redis.Client
-
 // CTX for context
-var ctx = context.Background()
+var repo *RedisRepository
+var once sync.Once
 
 type ICacheRepository interface {
 	StoreBy(namespace string, key string, value interface{}) error
@@ -24,22 +23,22 @@ type ICacheRepository interface {
 
 type RedisRepository struct {
 	redisClient *redis.Client
-	redisCtx    context.Context
+	ctx         context.Context
 }
 
-func BuildRedis() RedisRepository {
-	if rdb == nil {
+func Client() *RedisRepository {
+	return repo
+}
+
+func Builder() {
+	once.Do(func() {
 		initRedis()
-	}
-	return RedisRepository{
-		redisClient: rdb,
-		redisCtx:    ctx,
-	}
+	})
 }
 
 // initRedis for redis connection
 func initRedis() {
-	rdb = redis.NewClient(&redis.Options{
+	rdb := redis.NewClient(&redis.Options{
 		Addr:     viper.GetString("redis.addr"),
 		Password: "",  // no password set
 		DB:       0,   // use default DB
@@ -54,6 +53,7 @@ func initRedis() {
 	if err != nil {
 		panic("failed to connect redis")
 	}
+	repo = &RedisRepository{redisClient: rdb}
 }
 
 // StoreBy put value to cache
@@ -64,13 +64,13 @@ func (repo RedisRepository) StoreBy(namespace string, key string, value interfac
 		logrus.Error(err)
 		return err
 	}
-	_, err = repo.redisClient.Set(repo.redisCtx, namespace+":"+key, serialized, 0).Result()
+	_, err = repo.redisClient.Set(repo.ctx, namespace+":"+key, serialized, 0).Result()
 	return err
 }
 
 // GetBy get value from cache
 func (repo RedisRepository) GetBy(namepace string, key string, v interface{}) error {
-	serialized, err := repo.redisClient.Get(repo.redisCtx, namepace+":"+key).Result()
+	serialized, err := repo.redisClient.Get(repo.ctx, namepace+":"+key).Result()
 	if err != nil {
 		logrus.Error(err)
 		return err
@@ -81,6 +81,6 @@ func (repo RedisRepository) GetBy(namepace string, key string, v interface{}) er
 
 // DeleteBy value form cache
 func (repo RedisRepository) DeleteBy(namepace string, key string) error {
-	_, err := repo.redisClient.Del(repo.redisCtx, namepace+":"+key).Result()
+	_, err := repo.redisClient.Del(repo.ctx, namepace+":"+key).Result()
 	return err
 }

@@ -1,12 +1,14 @@
 package application
 
 import (
-	"pjhu/medicine/internal/app/ordercenter/domain"
-	"pjhu/medicine/pkg/errors"
-	"pjhu/medicine/pkg/idgenerator"
-
-	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+
+	"github.com/pjhu/medicine/internal/app/ordercenter/adapter/persistence"
+	"github.com/pjhu/medicine/internal/app/ordercenter/domain"
+	"github.com/pjhu/medicine/pkg/errors"
+	"github.com/pjhu/medicine/pkg/httpclient"
+	"github.com/pjhu/medicine/pkg/idgenerator"
 )
 
 type IApplicationService interface {
@@ -15,33 +17,35 @@ type IApplicationService interface {
 }
 
 type OrderApplicationService struct {
-	repository domain.IRepository
-	restClient *resty.Client
+	db *gorm.DB
 }
 
-func Build(repo domain.IRepository, client *resty.Client) IApplicationService {
-	return OrderApplicationService{
-		repository: repo,
-		restClient: client,
-	}
-}
-
-type Account struct {
+func Builder(db *gorm.DB) OrderApplicationService {
+	return OrderApplicationService{db: db}
 }
 
 // PlaceOrderHandler for create order
-func (appSvc OrderApplicationService) PlaceOrderHandler(placeOrderCommand PlaceOrderCommand) (result PlaceOrderResponse, e *errors.ErrorWithCode) {
+func (svc *OrderApplicationService) PlaceOrderHandler(placeOrderCommand PlaceOrderCommand) (result PlaceOrderResponse, e *errors.ErrorWithCode) {
 
 	logrus.Info("application service info: ", placeOrderCommand)
 
 	newOrder := domain.PlaceOrder(idgenerator.NewId(), placeOrderCommand.Quantity, "", "", "")
-	_, err := appSvc.repository.InsertOne(&newOrder)
+
+	err := svc.db.Transaction(func(tx *gorm.DB) error {
+		repo := persistence.Builder(tx)
+		err := repo.InsertOne(&newOrder)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		logrus.Error(err)
+		logrus.Error("place order failed, err: %v ", err)
 		return result, errors.NewErrorWithCode(errors.SystemInternalError, "insert order error")
 	}
 
-	post, err := appSvc.restClient.R().
+	type Account struct{}
+	post, err := httpclient.Resty().R().
 		SetBody(`{"userId": 1, "orderAmount": 1}`).
 		SetResult(&Account{}).
 		Post("http://localhost:48080/api/v1/accounts/decrease")
@@ -56,11 +60,12 @@ func (appSvc OrderApplicationService) PlaceOrderHandler(placeOrderCommand PlaceO
 }
 
 // GetOrderDetail for get order detail
-func (appSvc OrderApplicationService) GetOrderDetail(id int64) (rest domain.UserOrder, e *errors.ErrorWithCode) {
+func (svc *OrderApplicationService) GetOrderDetail(id int64) (rest domain.UserOrder, e *errors.ErrorWithCode) {
 
 	order := domain.UserOrder{Id: id}
-	has, err := appSvc.repository.Get(&order)
-	if has == nil {
+	repo := persistence.Builder(svc.db)
+	err := repo.FindBy(&order)
+	if err != nil {
 		logrus.Error(err)
 		return order, errors.NewErrorWithCode(errors.SystemInternalError, "not found order")
 	}

@@ -4,12 +4,12 @@ logging:
 
 datasource:
   master:
-    jdbcUrl: postgres://postgres:123@127.0.0.1:15432/ordercenter?sslmode=disable;
-    username: postgres
+    jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    username: root
     password: 123
   slave:
-    jdbcUrl: postgres://postgres:123@127.0.0.1:25432/ordercenter?sslmode=disable;
-    username: postgres
+    jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    username: root
     password: 123
   config:
     socketTimeout: 60

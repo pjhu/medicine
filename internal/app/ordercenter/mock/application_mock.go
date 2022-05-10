@@ -5,9 +5,9 @@
 package mock
 
 import (
-	errors "pjhu/medicine/pkg/errors"
-	application "pjhu/medicine/internal/app/ordercenter/application"
-	domain "pjhu/medicine/internal/app/ordercenter/domain"
+	errors "github.com/pjhu/medicine/pkg/errors"
+	application "github.com/pjhu/medicine/internal/app/ordercenter/application"
+	domain "github.com/pjhu/medicine/internal/app/ordercenter/domain"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"

@@ -1,53 +1,33 @@
 package persistence
 
 import (
+	"github.com/pjhu/medicine/internal/app/ordercenter/domain"
 	"github.com/sirupsen/logrus"
-	"xorm.io/xorm"
-
-	"pjhu/medicine/internal/app/ordercenter/domain"
+	"gorm.io/gorm"
 )
 
 type Repo struct {
-	DB *xorm.EngineGroup
+	DB *gorm.DB
 }
 
-func BuildMysqlRepo(db *xorm.EngineGroup) domain.IRepository {
+func Builder(db *gorm.DB) domain.IRepository {
 	return &Repo{
 		DB: db,
 	}
 }
 
-func (r *Repo) InsertOne(userOrder *domain.UserOrder) (int64, error) {
+func (r *Repo) InsertOne(userOrder *domain.UserOrder) error {
 
-	session := r.DB.NewSession()
-	err := session.Close()
-	if err != nil {
-		return 0, err
-	}
-
-	// add Begin() before any action
-	err = session.Begin()
-	if err != nil {
+	if err := r.DB.Create(userOrder).Error; err != nil {
 		logrus.Error(err)
-		return 0, err
+		return err
 	}
-
-	_, err = r.DB.InsertOne(userOrder)
-	if err != nil {
-		logrus.Error(err)
-		err := session.Rollback()
-		if err != nil {
-			logrus.Error(err)
-		}
-		return 0, err
-	}
-	return 1, err
+	return nil
 }
 
-func (r *Repo) Get(userOrder *domain.UserOrder) (*domain.UserOrder, error) {
-	_, err := r.DB.Get(userOrder)
-	if err != nil {
-		return nil, err
+func (r *Repo) FindBy(userOrder *domain.UserOrder) error {
+	if err := r.DB.Take(&userOrder).Error; err != nil {
+		return err
 	}
-	return userOrder, err
+	return nil
 }

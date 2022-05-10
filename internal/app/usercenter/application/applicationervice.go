@@ -1,12 +1,16 @@
 package application
 
 import (
+	Error "github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 
-	"pjhu/medicine/internal/app/usercenter/domain"
-	"pjhu/medicine/internal/pkg/cache"
-	"pjhu/medicine/pkg/errors"
-	"pjhu/medicine/pkg/idgenerator"
+	"github.com/pjhu/medicine/internal/app/usercenter/adapter/persistence"
+	"github.com/pjhu/medicine/internal/app/usercenter/domain"
+	"github.com/pjhu/medicine/internal/pkg/cache"
+	"github.com/pjhu/medicine/internal/pkg/datasource"
+	"github.com/pjhu/medicine/pkg/errors"
+	"github.com/pjhu/medicine/pkg/idgenerator"
 )
 
 type IApplicationService interface {
@@ -16,39 +20,48 @@ type IApplicationService interface {
 }
 
 type AuthApplicationService struct {
-	repository    domain.IRepository
-	rdbRepository cache.ICacheRepository
+	db *gorm.DB
 }
 
-func Build(repo domain.IRepository, rdbRepo cache.ICacheRepository) IApplicationService {
-	return AuthApplicationService{
-		repository:    repo,
-		rdbRepository: rdbRepo,
-	}
+func Builder(db *gorm.DB) AuthApplicationService {
+	return AuthApplicationService{db: db}
 }
 
 // Signin for user register
-func (appSvc AuthApplicationService) Signin(signinCommand SigninCommand) (result SigninResponse, e *errors.ErrorWithCode) {
-	has, err := appSvc.repository.Exist(&domain.Member{Phone: signinCommand.Phone})
+func (appSvc *AuthApplicationService) Signin(signinCommand SigninCommand) (result SigninResponse, e *errors.ErrorWithCode) {
 
+	db := datasource.GetDB()
+	exist := false
+	userId := idgenerator.NewId()
+	err := db.Transaction(func(tx *gorm.DB) error {
+		repo := persistence.Builder(tx)
+		err := repo.FindBy(&domain.Member{Phone: signinCommand.Phone})
+		if err == nil {
+			exist = true
+		}
+		if err != nil && Error.Is(err, gorm.ErrRecordNotFound) {
+			logrus.Error(err)
+			newMember := domain.NewMember(userId, signinCommand.Phone)
+			err = repo.InsertOne(newMember)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+		return err
+	})
+
+	if exist {
+		return result, errors.NewErrorWithCode(errors.SystemInternalError, "user phone already signin")
+	}
 	if err != nil {
 		logrus.Error(err)
-		return result, errors.NewErrorWithCode(errors.SystemInternalError, err.Error())
-	}
-
-	var userId int64
-	if !has {
-		userId = idgenerator.NewId()
-		newMember := domain.NewMember(userId, signinCommand.Phone)
-		_, err := appSvc.repository.InsertOne(newMember)
-		if err != nil {
-			return result, errors.NewErrorWithCode(errors.SystemInternalError, "insert user to db failure")
-		}
+		return result, errors.NewErrorWithCode(errors.SystemInternalError, "Signin failed")
 	}
 
 	token := cache.CreateTokenKey()
 	userMeta := cache.UserMeta{Id: userId, Phone: signinCommand.Phone}
-	err = appSvc.rdbRepository.StoreBy(cache.UserAuthNameSpace, token, userMeta)
+	err = cache.Client().StoreBy(cache.UserAuthNameSpace, token, userMeta)
 	if err != nil {
 		logrus.Error(err)
 		return result, errors.NewErrorWithCode(errors.SystemInternalError, "cache user token error")
@@ -58,13 +71,13 @@ func (appSvc AuthApplicationService) Signin(signinCommand SigninCommand) (result
 }
 
 // Signout for user logout
-func (appSvc AuthApplicationService) Signout(fullTokenString string) (e *errors.ErrorWithCode) {
+func (appSvc *AuthApplicationService) Signout(fullTokenString string) (e *errors.ErrorWithCode) {
 	tokenString, err := cache.ExtractTokenKey(fullTokenString)
 	if err != nil {
 		logrus.Error(err)
 		return errors.NewErrorWithCode(errors.SystemInternalError, "error token")
 	}
-	err = appSvc.rdbRepository.DeleteBy(cache.UserAuthNameSpace, tokenString)
+	err = cache.Client().DeleteBy(cache.UserAuthNameSpace, tokenString)
 	if err != nil {
 		logrus.Error(err)
 		return errors.NewErrorWithCode(errors.SystemInternalError, "delete token error")
@@ -73,14 +86,14 @@ func (appSvc AuthApplicationService) Signout(fullTokenString string) (e *errors.
 }
 
 // ValidateToken for validate token, refresh token, return user meta
-func (appSvc AuthApplicationService) ValidateToken(fullTokenString string) (userMeta *cache.UserMeta, e *errors.ErrorWithCode) {
+func (appSvc *AuthApplicationService) ValidateToken(fullTokenString string) (userMeta *cache.UserMeta, e *errors.ErrorWithCode) {
 	tokenString, err := cache.ExtractTokenKey(fullTokenString)
 	if err != nil {
 		logrus.Error(err)
 		return userMeta, errors.NewErrorWithCode(errors.SystemInternalError, "error token format")
 	}
 
-	err = appSvc.rdbRepository.GetBy(cache.UserAuthNameSpace, tokenString, &userMeta)
+	err = cache.Client().GetBy(cache.UserAuthNameSpace, tokenString, &userMeta)
 	if err != nil {
 		logrus.Error(err)
 		return userMeta, errors.NewErrorWithCode(errors.SystemInternalError, "token invalid")

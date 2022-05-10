@@ -3,13 +3,19 @@ package httpclient
 import (
 	"time"
 
-	"pjhu/medicine/pkg/errors"
+	"github.com/pjhu/medicine/pkg/errors"
 
 	"github.com/go-resty/resty/v2"
 )
 
+var client *resty.Client
+
+func Resty() *resty.Client {
+	return client
+}
+
 func BuildRestClient() *resty.Client {
-	client := resty.New()
+	client = resty.New()
 	// Retries are configured per client
 	client.
 		// Set retry count to non zero to enable retries

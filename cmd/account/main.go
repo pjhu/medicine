@@ -4,19 +4,19 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/internal/app/account/routers"
-	"pjhu/medicine/pkg/logconf"
-	"pjhu/medicine/pkg/viperconf"
+	"github.com/pjhu/medicine/internal/app/account/routers"
+	"github.com/pjhu/medicine/pkg/logconf"
+	"github.com/pjhu/medicine/pkg/viperconf"
 )
 
 func init() {
 	logconf.Init()
-	viperconf.Init()
+	viperconf.Init("cmd/account")
 }
 
 func main() {
 	// 初始化路由
-	newRouters := routers.SetupRouterEngine()
+	newRouters := routers.Init()
 	if err := newRouters.Run(viper.GetString("gin.port")); err != nil {
 		logrus.WithError(err).Error("startup service failed")
 	}

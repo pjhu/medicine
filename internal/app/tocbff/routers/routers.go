@@ -4,11 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
-	"pjhu/medicine/internal/pkg/middleware"
+	"github.com/pjhu/medicine/internal/pkg/middleware"
 )
 
-// SetupRouterEngine 初始化
-func SetupRouterEngine() *gin.Engine {
+// Init 初始化
+func Init() *gin.Engine {
 
 	engine := gin.Default()
 

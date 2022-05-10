@@ -1,6 +1,6 @@
 package domain
 
 type IRepository interface {
-	InsertOne(userOrder *UserOrder) (int64, error)
-	Get(userOrder *UserOrder) (*UserOrder, error)
+	InsertOne(userOrder *UserOrder) error
+	FindBy(userOrder *UserOrder) error
 }
