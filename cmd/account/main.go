@@ -11,7 +11,7 @@ import (
 
 func init() {
 	logconf.Init()
-	viperconf.Init("cmd/account")
+	viperconf.Init()
 }
 
 func main() {

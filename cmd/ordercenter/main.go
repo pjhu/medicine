@@ -14,7 +14,7 @@ import (
 
 func init() {
 	logconf.Init()
-	viperconf.Init("cmd/ordercenter")
+	viperconf.Init()
 	//dbmigrate.Init()
 }
 

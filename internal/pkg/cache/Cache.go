@@ -40,9 +40,9 @@ func Builder() {
 func initRedis() {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     viper.GetString("redis.addr"),
-		Password: "",  // no password set
-		DB:       0,   // use default DB
-		PoolSize: 100, // 连接池大小
+		Password: viper.GetString("redis.password"), // no password set
+		DB:       0,                                 // use default DB
+		PoolSize: 100,                               // 连接池大小
 	})
 	var cancel context.CancelFunc
 	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)

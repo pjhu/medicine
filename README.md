@@ -4,7 +4,7 @@
 - gin-gonic/gin 【web框架】
 - viper 【配置文件处理】
 - golang-migrate 【数据库migrate】
-- xorm 【ORM框架】
+- gorm 【ORM框架】
 - postgresql 【数据库驱动】
 - snowflaks【Id generator】
 - pkg/error 【错误处理】

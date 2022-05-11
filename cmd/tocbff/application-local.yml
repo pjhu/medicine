@@ -1,0 +1,9 @@
+logging:
+  level: DEBUG
+
+gin:
+  port: ":48080"
+
+microservice:
+  ordercenter: "http://127.0.0.1:28080"
+  usercenter: "http://127.0.0.1:38080"

@@ -1,0 +1,21 @@
+logging:
+  level: DEBUG
+
+gin:
+  port: ":38080"
+
+datasource:
+  master:
+    jdbcUrl: root:123@tcp(localhost:3306)/usercenter?charset=utf8mb4&parseTime=True
+    username: root
+    password: 123
+  slave:
+    jdbcUrl: root:123@tcp(localhost:3306)/usercenter?charset=utf8mb4&parseTime=True
+    username: root
+    password: 123
+  config:
+    socketTimeout: 60
+
+redis:
+  addr: "localhost:6379"
+  password: "123"

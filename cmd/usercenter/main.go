@@ -13,7 +13,7 @@ import (
 
 func init() {
 	logconf.Init()
-	viperconf.Init("cmd/usercenter")
+	viperconf.Init()
 	//dbmigrate.Build()
 }
 

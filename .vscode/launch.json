@@ -9,8 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "port": 38080,
-            "program": "${workspaceFolder}/tocbff/application/main/",
+            "program": "${workspaceFolder}/cmd/tocbff/main.go",
             "env": {
                 "PROFILES_ACTIVE": "local"
             },
@@ -21,8 +20,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "port": 18080,
-            "program": "${workspaceFolder}/usercenter/application/main/",
+            "program": "${workspaceFolder}/cmd/usercenter/main.go",
             "env": {
                 "PROFILES_ACTIVE": "local"
             },
@@ -33,8 +31,18 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "port": 28080,
-            "program": "${workspaceFolder}/ordercenter/application/main/",
+            "program": "${workspaceFolder}/cmd/ordercenter/main.go",
+            "env": {
+                "PROFILES_ACTIVE": "local"
+            },
+            "args": ["local"]
+        },
+        {
+            "name": "Launch account",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/account/main.go",
             "env": {
                 "PROFILES_ACTIVE": "local"
             },

@@ -1,0 +1,24 @@
+logging:
+  level: DEBUG
+
+gin:
+  port: ":28080"
+
+datasource:
+  master:
+    jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?characterEncoding=UTF-8
+    username: root
+    password: 123
+  slave:
+    jdbcUrl: root:123@tcp(localhost:3306)/ordercenter?characterEncoding=UTF-8
+    username: root
+    password: 123
+  config:
+    socketTimeout: 60
+
+redis:
+  addr: "localhost:6379"
+  password: "123"
+
+microservice:
+  account: "http://localhost:48080"
