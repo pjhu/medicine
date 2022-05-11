@@ -10,8 +10,8 @@ import (
 
 var client *resty.Client
 
-func Resty() *resty.Client {
-	return client
+func Request() *resty.Request {
+	return client.R()
 }
 
 func BuildRestClient() *resty.Client {

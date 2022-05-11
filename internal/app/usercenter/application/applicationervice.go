@@ -20,11 +20,15 @@ type IApplicationService interface {
 }
 
 type AuthApplicationService struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache cache.ICacheRepository
 }
 
-func Builder(db *gorm.DB) AuthApplicationService {
-	return AuthApplicationService{db: db}
+func Builder(db *gorm.DB, cache cache.ICacheRepository) AuthApplicationService {
+	return AuthApplicationService{
+		db:    db,
+		cache: cache,
+	}
 }
 
 // Signin for user register
@@ -61,7 +65,7 @@ func (appSvc *AuthApplicationService) Signin(signinCommand SigninCommand) (resul
 
 	token := cache.CreateTokenKey()
 	userMeta := cache.UserMeta{Id: userId, Phone: signinCommand.Phone}
-	err = cache.Client().StoreBy(cache.UserAuthNameSpace, token, userMeta)
+	err = appSvc.cache.StoreBy(cache.UserAuthNameSpace, token, userMeta)
 	if err != nil {
 		logrus.Error(err)
 		return result, errors.NewErrorWithCode(errors.SystemInternalError, "cache user token error")
@@ -77,7 +81,7 @@ func (appSvc *AuthApplicationService) Signout(fullTokenString string) (e *errors
 		logrus.Error(err)
 		return errors.NewErrorWithCode(errors.SystemInternalError, "error token")
 	}
-	err = cache.Client().DeleteBy(cache.UserAuthNameSpace, tokenString)
+	err = appSvc.cache.DeleteBy(cache.UserAuthNameSpace, tokenString)
 	if err != nil {
 		logrus.Error(err)
 		return errors.NewErrorWithCode(errors.SystemInternalError, "delete token error")
@@ -93,7 +97,7 @@ func (appSvc *AuthApplicationService) ValidateToken(fullTokenString string) (use
 		return userMeta, errors.NewErrorWithCode(errors.SystemInternalError, "error token format")
 	}
 
-	err = cache.Client().GetBy(cache.UserAuthNameSpace, tokenString, &userMeta)
+	err = appSvc.cache.GetBy(cache.UserAuthNameSpace, tokenString, &userMeta)
 	if err != nil {
 		logrus.Error(err)
 		return userMeta, errors.NewErrorWithCode(errors.SystemInternalError, "token invalid")

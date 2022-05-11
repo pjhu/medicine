@@ -14,6 +14,7 @@ import (
 // CTX for context
 var repo *RedisRepository
 var once sync.Once
+var ctx context.Context
 
 type ICacheRepository interface {
 	StoreBy(namespace string, key string, value interface{}) error
@@ -22,11 +23,10 @@ type ICacheRepository interface {
 }
 
 type RedisRepository struct {
-	redisClient *redis.Client
-	ctx         context.Context
+	client *redis.Client
 }
 
-func Client() *RedisRepository {
+func Repository() *RedisRepository {
 	return repo
 }
 
@@ -44,8 +44,8 @@ func initRedis() {
 		DB:       0,   // use default DB
 		PoolSize: 100, // 连接池大小
 	})
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	_, err := rdb.Ping(ctx).Result()
@@ -53,7 +53,7 @@ func initRedis() {
 	if err != nil {
 		panic("failed to connect redis")
 	}
-	repo = &RedisRepository{redisClient: rdb}
+	repo = &RedisRepository{client: rdb}
 }
 
 // StoreBy put value to cache
@@ -64,13 +64,13 @@ func (repo RedisRepository) StoreBy(namespace string, key string, value interfac
 		logrus.Error(err)
 		return err
 	}
-	_, err = repo.redisClient.Set(repo.ctx, namespace+":"+key, serialized, 0).Result()
+	_, err = repo.client.Set(ctx, namespace+":"+key, serialized, 0).Result()
 	return err
 }
 
 // GetBy get value from cache
 func (repo RedisRepository) GetBy(namepace string, key string, v interface{}) error {
-	serialized, err := repo.redisClient.Get(repo.ctx, namepace+":"+key).Result()
+	serialized, err := repo.client.Get(ctx, namepace+":"+key).Result()
 	if err != nil {
 		logrus.Error(err)
 		return err
@@ -81,6 +81,6 @@ func (repo RedisRepository) GetBy(namepace string, key string, v interface{}) er
 
 // DeleteBy value form cache
 func (repo RedisRepository) DeleteBy(namepace string, key string) error {
-	_, err := repo.redisClient.Del(repo.ctx, namepace+":"+key).Result()
+	_, err := repo.client.Del(ctx, namepace+":"+key).Result()
 	return err
 }

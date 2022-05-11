@@ -1,11 +1,13 @@
 package application
 
 import (
+	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
 	"github.com/pjhu/medicine/internal/app/ordercenter/adapter/persistence"
 	"github.com/pjhu/medicine/internal/app/ordercenter/domain"
+	"github.com/pjhu/medicine/internal/pkg/cache"
 	"github.com/pjhu/medicine/pkg/errors"
 	"github.com/pjhu/medicine/pkg/httpclient"
 	"github.com/pjhu/medicine/pkg/idgenerator"
@@ -17,11 +19,17 @@ type IApplicationService interface {
 }
 
 type OrderApplicationService struct {
-	db *gorm.DB
+	db          *gorm.DB
+	cache       cache.ICacheRepository
+	httprequest *resty.Request
 }
 
-func Builder(db *gorm.DB) OrderApplicationService {
-	return OrderApplicationService{db: db}
+func Builder(db *gorm.DB, cache cache.ICacheRepository, httprequest *resty.Request) OrderApplicationService {
+	return OrderApplicationService{
+		db:          db,
+		cache:       cache,
+		httprequest: httprequest,
+	}
 }
 
 // PlaceOrderHandler for create order
@@ -45,7 +53,7 @@ func (svc *OrderApplicationService) PlaceOrderHandler(placeOrderCommand PlaceOrd
 	}
 
 	type Account struct{}
-	post, err := httpclient.Resty().R().
+	post, err := httpclient.Request().
 		SetBody(`{"userId": 1, "orderAmount": 1}`).
 		SetResult(&Account{}).
 		Post("http://localhost:48080/api/v1/accounts/decrease")

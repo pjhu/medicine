@@ -33,7 +33,7 @@ func signin(ctx *gin.Context) {
 		return
 	}
 
-	appSvc := application.Builder(datasource.GetDB())
+	appSvc := application.Builder(datasource.GetDB(), cache.Repository())
 	response, err := appSvc.Signin(signinCommand)
 	if err != nil {
 		logrus.Error(err)
@@ -52,7 +52,7 @@ func signin(ctx *gin.Context) {
 
 // signout for user authentication
 func signout(ctx *gin.Context) {
-	appSvc := application.AuthApplicationService{}
+	appSvc := application.Builder(datasource.GetDB(), cache.Repository())
 	err := appSvc.Signout(ctx.GetHeader(cache.AuthorizationHeader))
 	if err != nil {
 		logrus.Error(err)
@@ -81,7 +81,7 @@ func validateToken(ctx *gin.Context) {
 		})
 		return
 	}
-	appSvc := application.AuthApplicationService{}
+	appSvc := application.Builder(datasource.GetDB(), cache.Repository())
 	userMeta, err := appSvc.ValidateToken(validateTokenCommand.Token)
 	if err != nil {
 		logrus.Error(err)

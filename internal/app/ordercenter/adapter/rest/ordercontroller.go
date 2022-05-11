@@ -7,7 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/pjhu/medicine/internal/app/ordercenter/application"
+	"github.com/pjhu/medicine/internal/pkg/cache"
 	"github.com/pjhu/medicine/internal/pkg/datasource"
+	"github.com/pjhu/medicine/pkg/httpclient"
 )
 
 // InitRouters for order
@@ -33,7 +35,7 @@ func placeOrder(ctx *gin.Context) {
 
 	logrus.Info("controller info: ", placeOrderCommand)
 
-	appSvc := application.Builder(datasource.GetDB())
+	appSvc := application.Builder(datasource.GetDB(), cache.Repository(), httpclient.Request())
 	placeOrderResponse, err := appSvc.PlaceOrderHandler(placeOrderCommand)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
@@ -58,7 +60,7 @@ func getOrderDetail(ctx *gin.Context) {
 		return
 	}
 
-	appSvc := application.Builder(datasource.GetDB())
+	appSvc := application.Builder(datasource.GetDB(), cache.Repository(), httpclient.Request())
 	order, err := appSvc.GetOrderDetail(req.ID)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
