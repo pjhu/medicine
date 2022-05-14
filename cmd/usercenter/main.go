@@ -4,7 +4,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"github.com/pjhu/medicine/internal/app/usercenter/routers"
+	"github.com/pjhu/medicine/internal/app/ordercenter/adapter/persistence"
+	"github.com/pjhu/medicine/internal/app/usercenter/adapter/routers"
 	"github.com/pjhu/medicine/internal/pkg/cache"
 	"github.com/pjhu/medicine/internal/pkg/datasource"
 	"github.com/pjhu/medicine/pkg/logconf"
@@ -14,11 +15,11 @@ import (
 func init() {
 	logconf.Init()
 	viperconf.Init()
-	//dbmigrate.Build()
 }
 
 func main() {
-	datasource.Builder()
+	db := datasource.Builder()
+	persistence.Automigrate(db)
 	cache.Builder()
 	// 初始化路由
 	routerEngine := routers.Init()

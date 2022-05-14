@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: medicine-mysql
-    volumes: 
+    volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - TZ=Asia/Shanghai

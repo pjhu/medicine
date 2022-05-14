@@ -5,41 +5,6 @@ import (
 	"net/http"
 )
 
-// ErrorWithCode wrap error with code
-type ErrorWithCode struct {
-	Code string
-	Err  error
-}
-
-// ErrorResponse for unify repsonse
-type ErrorResponse struct {
-	Code         string `json:"code"`
-	ErrorMessage string `json:"message"`
-}
-
-func (r *ErrorWithCode) Error() string {
-	return r.Err.Error()
-}
-
-// GetHTTPStatus return a HTTP status
-func (r *ErrorWithCode) GetHTTPStatus() int {
-	return codeMappingWithHTTTPStatus[r.Code]
-}
-
-// GetErrorResponse return a HTTP response
-func (r *ErrorWithCode) GetErrorResponse() *ErrorResponse {
-	return &ErrorResponse{
-		Code:         r.Code,
-		ErrorMessage: r.Err.Error()}
-}
-
-// NewErrorWithCode create new error with error code
-func NewErrorWithCode(errorCode string, errorMessage string) *ErrorWithCode {
-	return &ErrorWithCode{
-		Code: errorCode,
-		Err:  errors.New(errorMessage)}
-}
-
 const (
 	// SystemInternalError server error code
 	SystemInternalError = "SYSTEM_INTERNAL_ERROR"
@@ -61,6 +26,41 @@ const (
 	// NoAuthorizerError client error code
 	NoAuthorizerError = "NO_AUTHORIZER_ERROR"
 )
+
+// ErrorWithCode wrap error with code
+type ErrorWithCode struct {
+	Code string
+	Err  error
+}
+
+// ErrorResponse for unify repsonse
+type ErrorResponse struct {
+	Code         string `json:"code"`
+	ErrorMessage string `json:"message"`
+}
+
+// NewErrorWithCode create new error with error code
+func NewErrorWithCode(errorCode string, errorMessage string) *ErrorWithCode {
+	return &ErrorWithCode{
+		Code: errorCode,
+		Err:  errors.New(errorMessage)}
+}
+
+func (r *ErrorWithCode) Error() string {
+	return r.Err.Error()
+}
+
+// GetHTTPStatus return a HTTP status
+func (r *ErrorWithCode) GetHTTPStatus() int {
+	return codeMappingWithHTTTPStatus[r.Code]
+}
+
+// GetErrorResponse return a HTTP response
+func (r *ErrorWithCode) GetErrorResponse() *ErrorResponse {
+	return &ErrorResponse{
+		Code:         r.Code,
+		ErrorMessage: r.Err.Error()}
+}
 
 var codeMappingWithHTTTPStatus = map[string]int{
 	SystemInternalError: http.StatusInternalServerError,

@@ -35,7 +35,7 @@ func Builder() *gorm.DB {
 	return db
 }
 
-func GetDB() *gorm.DB {
+func NewDBSession() *gorm.DB {
 	newLogger := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
 			SlowThreshold: time.Second,

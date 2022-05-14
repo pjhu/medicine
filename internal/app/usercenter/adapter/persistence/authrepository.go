@@ -6,27 +6,27 @@ import (
 	"gorm.io/gorm"
 )
 
-type Repo struct {
-	DB *gorm.DB
+type AuthRepository struct {
+	db *gorm.DB
 }
 
-func Builder(db *gorm.DB) domain.IRepository {
-	return &Repo{
-		DB: db,
+func NewAuthRepository(db *gorm.DB) domain.IAuthRepository {
+	return &AuthRepository{
+		db: db,
 	}
 }
 
-func (r *Repo) InsertOne(member *domain.Member) error {
+func (r *AuthRepository) InsertOne(member *domain.Member) error {
 
-	if err := r.DB.Create(member).Error; err != nil {
+	if err := r.db.Create(member).Error; err != nil {
 		logrus.Error(err)
 		return err
 	}
 	return nil
 }
 
-func (r *Repo) FindBy(member *domain.Member) error {
-	if err := r.DB.Take(member).Error; err != nil {
+func (r *AuthRepository) FindBy(member *domain.Member) error {
+	if err := r.db.Take(member).Error; err != nil {
 		return err
 	}
 	return nil

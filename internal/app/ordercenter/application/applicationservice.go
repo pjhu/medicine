@@ -5,7 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
-	"github.com/pjhu/medicine/internal/app/ordercenter/adapter/persistence"
 	"github.com/pjhu/medicine/internal/app/ordercenter/domain"
 	"github.com/pjhu/medicine/internal/pkg/cache"
 	"github.com/pjhu/medicine/pkg/errors"
@@ -13,20 +12,26 @@ import (
 	"github.com/pjhu/medicine/pkg/idgenerator"
 )
 
-type IApplicationService interface {
+type IOrderApplicationService interface {
 	PlaceOrderHandler(placeOrderCommand PlaceOrderCommand) (result PlaceOrderResponse, e *errors.ErrorWithCode)
 	GetOrderDetail(id int64) (rest domain.UserOrder, e *errors.ErrorWithCode)
 }
 
 type OrderApplicationService struct {
 	db          *gorm.DB
+	repo        domain.IOrderRepository
 	cache       cache.ICacheRepository
 	httprequest *resty.Request
 }
 
-func Builder(db *gorm.DB, cache cache.ICacheRepository, httprequest *resty.Request) OrderApplicationService {
-	return OrderApplicationService{
+// 变量断言: 如果没有实现所以方法，编译报missing method
+var _ IOrderApplicationService = &OrderApplicationService{}
+
+func NewOrderApplicationService(db *gorm.DB, repo domain.IOrderRepository,
+	cache cache.ICacheRepository, httprequest *resty.Request) *OrderApplicationService {
+	return &OrderApplicationService{
 		db:          db,
+		repo:        repo,
 		cache:       cache,
 		httprequest: httprequest,
 	}
@@ -36,12 +41,10 @@ func Builder(db *gorm.DB, cache cache.ICacheRepository, httprequest *resty.Reque
 func (svc *OrderApplicationService) PlaceOrderHandler(placeOrderCommand PlaceOrderCommand) (result PlaceOrderResponse, e *errors.ErrorWithCode) {
 
 	logrus.Info("application service info: ", placeOrderCommand)
-
 	newOrder := domain.PlaceOrder(idgenerator.NewId(), placeOrderCommand.Quantity, "", "", "")
 
 	err := svc.db.Transaction(func(tx *gorm.DB) error {
-		repo := persistence.Builder(tx)
-		err := repo.InsertOne(&newOrder)
+		err := svc.repo.InsertOne(&newOrder)
 		if err != nil {
 			return err
 		}
@@ -71,8 +74,7 @@ func (svc *OrderApplicationService) PlaceOrderHandler(placeOrderCommand PlaceOrd
 func (svc *OrderApplicationService) GetOrderDetail(id int64) (rest domain.UserOrder, e *errors.ErrorWithCode) {
 
 	order := domain.UserOrder{Id: id}
-	repo := persistence.Builder(svc.db)
-	err := repo.FindBy(&order)
+	err := svc.repo.FindBy(&order)
 	if err != nil {
 		logrus.Error(err)
 		return order, errors.NewErrorWithCode(errors.SystemInternalError, "not found order")

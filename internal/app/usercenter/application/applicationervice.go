@@ -5,7 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
-	"github.com/pjhu/medicine/internal/app/usercenter/adapter/persistence"
 	"github.com/pjhu/medicine/internal/app/usercenter/domain"
 	"github.com/pjhu/medicine/internal/pkg/cache"
 	"github.com/pjhu/medicine/internal/pkg/datasource"
@@ -13,7 +12,7 @@ import (
 	"github.com/pjhu/medicine/pkg/idgenerator"
 )
 
-type IApplicationService interface {
+type IAuthApplicationService interface {
 	Signin(signinCommand SigninCommand) (response SigninResponse, e *errors.ErrorWithCode)
 	Signout(fullTokenString string) (e *errors.ErrorWithCode)
 	ValidateToken(fullTokenString string) (userMeta *cache.UserMeta, e *errors.ErrorWithCode)
@@ -21,12 +20,18 @@ type IApplicationService interface {
 
 type AuthApplicationService struct {
 	db    *gorm.DB
+	repo  domain.IAuthRepository
 	cache cache.ICacheRepository
 }
 
-func Builder(db *gorm.DB, cache cache.ICacheRepository) AuthApplicationService {
-	return AuthApplicationService{
+// 变量断言: 如果没有实现所以方法，编译报missing method
+var _ IAuthApplicationService = &AuthApplicationService{}
+
+func NewAuthApplicationService(db *gorm.DB, repo domain.IAuthRepository,
+	cache cache.ICacheRepository) *AuthApplicationService {
+	return &AuthApplicationService{
 		db:    db,
+		repo:  repo,
 		cache: cache,
 	}
 }
@@ -34,19 +39,18 @@ func Builder(db *gorm.DB, cache cache.ICacheRepository) AuthApplicationService {
 // Signin for user register
 func (appSvc *AuthApplicationService) Signin(signinCommand SigninCommand) (result SigninResponse, e *errors.ErrorWithCode) {
 
-	db := datasource.GetDB()
+	db := datasource.NewDBSession()
 	exist := false
 	userId := idgenerator.NewId()
 	err := db.Transaction(func(tx *gorm.DB) error {
-		repo := persistence.Builder(tx)
-		err := repo.FindBy(&domain.Member{Phone: signinCommand.Phone})
+		err := appSvc.repo.FindBy(&domain.Member{Phone: signinCommand.Phone})
 		if err == nil {
 			exist = true
 		}
 		if err != nil && Error.Is(err, gorm.ErrRecordNotFound) {
 			logrus.Error(err)
 			newMember := domain.NewMember(userId, signinCommand.Phone)
-			err = repo.InsertOne(newMember)
+			err = appSvc.repo.InsertOne(newMember)
 			if err != nil {
 				return err
 			}

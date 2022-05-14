@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
+	"github.com/pjhu/medicine/internal/app/usercenter/adapter/persistence"
 	"github.com/pjhu/medicine/internal/app/usercenter/application"
 	"github.com/pjhu/medicine/internal/pkg/cache"
 	"github.com/pjhu/medicine/internal/pkg/datasource"
@@ -33,7 +34,7 @@ func signin(ctx *gin.Context) {
 		return
 	}
 
-	appSvc := application.Builder(datasource.GetDB(), cache.Repository())
+	appSvc := buildApplicationService()
 	response, err := appSvc.Signin(signinCommand)
 	if err != nil {
 		logrus.Error(err)
@@ -52,7 +53,7 @@ func signin(ctx *gin.Context) {
 
 // signout for user authentication
 func signout(ctx *gin.Context) {
-	appSvc := application.Builder(datasource.GetDB(), cache.Repository())
+	appSvc := buildApplicationService()
 	err := appSvc.Signout(ctx.GetHeader(cache.AuthorizationHeader))
 	if err != nil {
 		logrus.Error(err)
@@ -81,7 +82,7 @@ func validateToken(ctx *gin.Context) {
 		})
 		return
 	}
-	appSvc := application.Builder(datasource.GetDB(), cache.Repository())
+	appSvc := buildApplicationService()
 	userMeta, err := appSvc.ValidateToken(validateTokenCommand.Token)
 	if err != nil {
 		logrus.Error(err)
@@ -96,4 +97,10 @@ func validateToken(ctx *gin.Context) {
 		"data":    userMeta,
 		"message": nil,
 	})
+}
+
+func buildApplicationService() *application.AuthApplicationService {
+	db := datasource.NewDBSession()
+	repo := persistence.NewAuthRepository(db)
+	return application.NewAuthApplicationService(db, repo, cache.Repository())
 }

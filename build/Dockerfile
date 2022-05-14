@@ -13,6 +13,5 @@ RUN go build -o app .
 FROM scratch
 
 COPY --from=builder /build/app /
-COPY --from=builder /build/configs/ /configs/
 
 ENTRYPOINT ["/app"]

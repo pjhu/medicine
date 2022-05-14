@@ -1,6 +1,6 @@
 package domain
 
-type IRepository interface {
+type IAuthRepository interface {
 	InsertOne(member *Member) error
 	FindBy(member *Member) error
 }
